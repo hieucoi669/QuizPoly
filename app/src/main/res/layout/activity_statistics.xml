@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.StatisticsActivity"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="@color/backGroundLogo">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:paddingLeft="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Câu hỏi có tỉ lệ trả lời đúng nhất:"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <androidx.cardview.widget.CardView
+                android:layout_weight="0.3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="32dp">
+
+                    <TextView
+                        android:textAlignment="center"
+                        android:id="@+id/tvQuestionHR"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:text="Hiện tại, FPT Polytechnic có bao nhiêu cơ sở trên toàn quốc?"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:layout_weight="0.7"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/pieChartCorrect"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_marginTop="50dp"
+            android:paddingLeft="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Câu hỏi có tỉ lệ trả lời đúng thấp nhất:"
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="50dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_weight="0.3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="32dp">
+
+                    <TextView
+                        android:textAlignment="center"
+                        android:id="@+id/tvQuestionLR"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:text="Cơ sở FPT Polytechnic đầu tiên được thành lập ở đâu?"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:layout_weight="0.7"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/pieChartWrong"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_margin="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quay về"
+        android:id="@+id/btnReturnStatistics"/>
+
+</LinearLayout>

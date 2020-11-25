@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.MenuActivity"
+    android:gravity="center|top"
+    android:background="@color/backGroundLogo">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/linearLayoutTop"
+        android:layout_marginTop="40dp"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:elevation="16dp"
+        app:cardCornerRadius="10dp"
+        android:onClick="edit">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_player_info"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivAvatar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/avatar_holder"/>
+
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tvTenHienThi"
+                    android:layout_width="110dp"
+                    android:layout_height="20dp"
+                    android:text="Tên hiển thị"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/tvTenDangNhap"
+                    android:layout_width="110dp"
+                    android:layout_height="20dp"
+                    android:text="Tên Đăng nhập"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:textStyle="italic"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/ic_logout"
+                android:background="@drawable/border_icon"
+                android:padding="8dp"
+                android:alpha="0.7"
+                android:onClick="logout"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/ivLogoText"
+        android:layout_below="@+id/linearLayoutTop"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:src="@drawable/logotext"
+        android:layout_marginTop="70dp"
+        android:onClick="toResult"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewPlay"
+        android:layout_below="@id/ivLogoText"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="60dp"
+        android:elevation="8dp"
+        app:cardCornerRadius="10dp"
+        android:soundEffectsEnabled="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/bg_play"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_play"/>
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="60dp"
+                android:layout_height="20dp"
+                android:text="Bắt đầu"
+                android:textAlignment="center"
+                android:textColor="#006517"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewLeaderBoard"
+        android:layout_below="@+id/ivLogoText"
+        android:layout_toRightOf="@+id/cardViewPlay"
+        android:layout_width="140dp"
+        android:layout_height="170dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="5dp"
+        android:elevation="8dp"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_leader_board"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_trophy"/>
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Bảng xếp hạng"
+                android:textColor="#715B00"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewSettings"
+        android:layout_below="@+id/cardViewPlay"
+        android:layout_width="110dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
+        android:elevation="8dp"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_settings"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_settings"/>
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Cài đặt"
+                android:textColor="#5F2501"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewStatistics"
+        android:layout_below="@+id/cardViewLeaderBoard"
+        android:layout_toRightOf="@+id/cardViewSettings"
+        android:layout_width="180dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="5dp"
+        android:elevation="8dp"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_statistics"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_pie_chart"/>
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Thống kê"
+                android:textColor="#006774"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
