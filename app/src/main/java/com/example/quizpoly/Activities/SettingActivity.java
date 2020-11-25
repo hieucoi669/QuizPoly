@@ -3,9 +3,7 @@ package com.example.quizpoly.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -63,8 +61,8 @@ public class SettingActivity extends AppCompatActivity {
             switchSound.setChecked(false);
         }
     }
-    public void settingBack(View view)
-    {
+    public void settingBack(View view) {
+        App.getMusicPlayer().setting(switchBG.isChecked(), switchSound.isChecked());
         finish();
     }
 
@@ -78,7 +76,6 @@ public class SettingActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         App.getMusicPlayer().resumeBgMusic();
-
     }
 
 }

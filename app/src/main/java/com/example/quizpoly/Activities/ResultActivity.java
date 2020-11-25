@@ -131,9 +131,6 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
             File f = saveBitmap(bitmap);
             shareScreenshot(f);
         }else if(id == R.id.btnPlayAgain){
-//            Intent intent = new Intent(ResultActivity.this, MenuActivity.class);
-//            intent.putExtra("username",username);
-//            startActivity(intent);
             finish();
         }
     }

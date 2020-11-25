@@ -14,6 +14,7 @@ import com.example.quizpoly.DAO.QuizDAO;
 import com.example.quizpoly.Models.Quiz;
 import com.example.quizpoly.R;
 import com.example.quizpoly.RecAdapter;
+import com.example.quizpoly.Sound.App;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
@@ -70,5 +71,18 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.getMusicPlayer().pauseBgMusic();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        App.getMusicPlayer().resumeBgMusic();
+
     }
 }

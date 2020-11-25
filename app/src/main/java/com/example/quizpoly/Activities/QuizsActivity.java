@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -18,8 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -37,6 +34,7 @@ import com.example.quizpoly.DAO.QuestionDAO;
 import com.example.quizpoly.Models.Quiz;
 import com.example.quizpoly.Models.QuizResult;
 import com.example.quizpoly.R;
+import com.example.quizpoly.Sound.App;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -498,5 +496,17 @@ public class QuizsActivity extends AppCompatActivity implements View.OnClickList
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.getMusicPlayer().pauseBgMusic();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        App.getMusicPlayer().resumeBgMusic();
     }
 }

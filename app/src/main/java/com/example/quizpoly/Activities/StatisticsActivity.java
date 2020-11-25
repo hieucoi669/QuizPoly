@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.quizpoly.DAO.QuizResultDAO;
 import com.example.quizpoly.Models.QuestionRate;
 import com.example.quizpoly.R;
+import com.example.quizpoly.Sound.App;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -99,5 +100,18 @@ public class StatisticsActivity extends AppCompatActivity {
 //        chart.setNoDataText("Không đủ dữ liệu!");
 //        chart.setNoDataTextColor(Color.BLACK);
         chart.invalidate();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.getMusicPlayer().pauseBgMusic();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        App.getMusicPlayer().resumeBgMusic();
+
     }
 }

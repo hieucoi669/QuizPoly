@@ -18,7 +18,7 @@ public class MusicManager implements MediaPlayer.OnPreparedListener, MediaPlayer
     public static final int PLAYER_PAUSE = 2;
     private int stateS, stateBg;
 
-    public static final int bgMusicList = R.raw.bgmusic1;
+    public static final int bgMusicList = R.raw.bg_sound_ver1;
     public static final int buttonclick = R.raw.buttonsoundfinal;
 
     private MediaPlayer mediaPlayer;
@@ -49,7 +49,6 @@ public class MusicManager implements MediaPlayer.OnPreparedListener, MediaPlayer
         return stateSound;
     }
 
-
     private void getPreferenceSetting() {
         preferences = PreferenceManager.getDefaultSharedPreferences(c);
         boolean stateMusic = preferences.getBoolean(STATE_MUSIC, true);
@@ -73,12 +72,16 @@ public class MusicManager implements MediaPlayer.OnPreparedListener, MediaPlayer
 
     public void play(int idSound, MediaPlayer.OnCompletionListener completionListener) {
         if (!getStateSound()) {
+            if (completionListener == null) {
+                return;
+            }
             completionListener.onCompletion(null);
             return;
         }
-        stopSound();
+
+//        stopSound();
         stateS = PLAYER_IDLE;
-        mediaPlayer = new MediaPlayer();
+//        mediaPlayer = new MediaPlayer();
         mediaPlayer = MediaPlayer.create(c, idSound);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnCompletionListener(completionListener);
@@ -92,7 +95,7 @@ public class MusicManager implements MediaPlayer.OnPreparedListener, MediaPlayer
         if (!getStateMusic()) {
             return;
         }
-        stopBgMusic();
+//        stopBgMusic();
         stateBg = PLAYER_IDLE;
         bgMusic = new MediaPlayer();
         bgMusic = MediaPlayer.create(c, idSound);
@@ -112,9 +115,8 @@ public class MusicManager implements MediaPlayer.OnPreparedListener, MediaPlayer
     }
 
     public void pauseBgMusic() {
-        if (stateBg == PLAYER_PLAY) {
+        if(bgMusic != null){
             bgMusic.pause();
-            stateBg = PLAYER_PAUSE;
         }
     }
 
@@ -126,9 +128,8 @@ public class MusicManager implements MediaPlayer.OnPreparedListener, MediaPlayer
     }
 
     public void resumeBgMusic() {
-        if (stateBg == PLAYER_PAUSE && stateS != PLAYER_PLAY) {
+        if(bgMusic != null){
             bgMusic.start();
-            stateBg = PLAYER_PLAY;
         }
     }
 
