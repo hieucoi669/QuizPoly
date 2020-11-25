@@ -63,7 +63,7 @@
                 android:src="@drawable/ic_logout"
                 android:background="@drawable/border_icon"
                 android:padding="8dp"
-                android:alpha="0.7"
+                android:alpha="0.6"
                 android:onClick="logout"/>
 
         </LinearLayout>
