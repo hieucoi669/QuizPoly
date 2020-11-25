@@ -71,17 +71,6 @@ public class UserDAO {
         return 1;
     }
 
-//    public int deleteTinTuc(int id)
-//    {
-//        String idxoa = String.valueOf(id);
-//        int kq = db.delete(TABLE_NAME,"id=?",new String[]{idxoa});
-//        if(kq==0)
-//        {
-//            return -1;//xoa khong thanh cong
-//        }
-//        return 1;//xoa thanh cong
-//    }
-
     public int updateUser(User u)
     {
         ContentValues values = new ContentValues();
@@ -99,25 +88,6 @@ public class UserDAO {
         }
         return 1;
     }
-
-//    public User checkUserExist(String username) {
-//        Cursor result = db.query(TABLE_NAME,null,"username=?",new String[]{username},null,null,null);
-//        result.moveToFirst();
-//        if(result.getCount() != 0)
-//        {
-//            User u = new User();
-//            u.setId(result.getString(0));
-//            u.setUsername(result.getString(1));
-//            u.setPassword(result.getString(2));
-//            u.setStringUri(result.getString(3));
-//            u.setDisplayname(result.getString(4));
-//
-//            result.close();
-//            return u;
-//        }
-//        result.close();
-//        return null;
-//    }
 
     public User checkUserExist(String HOC,String selection) {
         Cursor result = db.query(TABLE_NAME,null,selection,new String[]{HOC},null,null,null);

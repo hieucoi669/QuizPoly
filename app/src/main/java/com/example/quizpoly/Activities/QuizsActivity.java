@@ -170,7 +170,7 @@ public class QuizsActivity extends AppCompatActivity implements View.OnClickList
             soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC,0);
         }
 
-        sound = soundPool.load(getApplicationContext(),R.raw.ticking,1);
+        sound = soundPool.load(getApplicationContext(),R.raw.ticking_ver2,1);
     }
 
     private void setDefaultAnswer(){

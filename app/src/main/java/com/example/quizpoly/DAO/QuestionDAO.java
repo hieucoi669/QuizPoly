@@ -76,47 +76,4 @@ public class QuestionDAO {
         db.delete(TABLE_NAME, null, null);
     }
 
-//    public int deleteTinTuc(int id)
-//    {
-//        String idxoa = String.valueOf(id);
-//        int kq = db.delete(TABLE_NAME,"id=?",new String[]{idxoa});
-//        if(kq==0)
-//        {
-//            return -1;//xoa khong thanh cong
-//        }
-//        return 1;//xoa thanh cong
-//    }
-
-//    public int updateDiaDiem(DiaDiem dd)
-//    {
-//        ContentValues values = new ContentValues();
-//        values.put("id", dd.getId());
-//        values.put("tieude", dd.getTieude());
-//        values.put("kinhdo", dd.getKinhdo());
-//        values.put("vido" , dd.getVido());
-//        int kq = db.update(TABLE_NAME,values,"id=?", new String[]{dd.getId()});
-//        if(kq==0)
-//        {
-//            return -1;
-//        }
-//        return 1;
-//    }
-//
-//    public DiaDiem checkIDExist(String id) {
-//        Cursor result = db.query(TABLE_NAME,null,"id=?",new String[]{id},null,null,null);
-//        result.moveToFirst();
-//        if(result.getCount() != 0)
-//        {
-//            DiaDiem dd = new DiaDiem();
-//            dd.setId(result.getString(0));
-//            dd.setTieude(result.getString(1));
-//            dd.setKinhdo(result.getString(2));
-//            dd.setVido(result.getString(3));
-//            result.close();
-//            return dd;
-//        }
-//        result.close();
-//        return null;
-//    }
-
 }

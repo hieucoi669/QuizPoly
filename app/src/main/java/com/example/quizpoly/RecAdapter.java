@@ -90,7 +90,6 @@ public class RecAdapter extends RecyclerView.Adapter<RecAdapter.ViewHolder>{
         holder.ivDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("check", "Rec");
                 Intent i = new Intent(context, PlayerDetailActivity.class);
                 i.putExtra("username", u.getUsername());
                 context.startActivity(i);
