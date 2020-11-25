@@ -38,7 +38,6 @@
         <activity
             android:name=".Activities.OneTimeActivity"
             android:theme="@style/Theme.QuizPoly.NoActionBar"
-            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"/>
         <activity android:name=".Activities.SplashScreen"
             android:screenOrientation="portrait">
