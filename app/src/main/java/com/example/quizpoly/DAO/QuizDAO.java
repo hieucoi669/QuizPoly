@@ -12,7 +12,7 @@ import com.example.quizpoly.Models.Quiz;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuizDAO {
+public class  QuizDAO {
     private SQLiteDatabase db;
     private DatabaseHelper dbHelper;
     public static final String TABLE_NAME = "Quiz";
@@ -30,7 +30,10 @@ public class QuizDAO {
     public List<Quiz> getQuizList()
     {
         List<Quiz> listQ = new ArrayList<>();
-        Cursor cursor = db.query(TABLE_NAME,null,null,null,null,null,null);
+        String sql = "Select * " +
+                "FROM Quiz " +
+                "ORDER BY numberCorrectAnswer DESC, time";
+        Cursor cursor = db.rawQuery(sql, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast())
         {
@@ -67,16 +70,7 @@ public class QuizDAO {
         return 1;
     }
 
-//    public int deleteTinTuc(int id)
-//    {
-//        String idxoa = String.valueOf(id);
-//        int kq = db.delete(TABLE_NAME,"id=?",new String[]{idxoa});
-//        if(kq==0)
-//        {
-//            return -1;//xoa khong thanh cong
-//        }
-//        return 1;//xoa thanh cong
-//    }
+
 
     public int updateQuiz(String quizID, int numCorrectAnswer, int time)
     {
