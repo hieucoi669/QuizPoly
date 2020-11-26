@@ -270,7 +270,7 @@ public class QuizsActivity extends AppCompatActivity implements View.OnClickList
     private void setClock(){
 
         animation = ObjectAnimator.ofInt(pbClock, "progress", 1500, 0);
-        animation.setDuration(15000); // 3.5 second
+        animation.setDuration(15000);
         animation.setInterpolator(null);
         animation.addUpdateListener(valueAnimator -> {
             int time = Integer.parseInt(valueAnimator.getAnimatedValue().toString())*10;
@@ -498,15 +498,15 @@ public class QuizsActivity extends AppCompatActivity implements View.OnClickList
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        App.getMusicPlayer().pauseBgMusic();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        App.getMusicPlayer().resumeBgMusic();
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        App.getMusicPlayer().pauseBgMusic();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        App.getMusicPlayer().resumeBgMusic();
+//    }
 }

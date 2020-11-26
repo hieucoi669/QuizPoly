@@ -2,10 +2,13 @@ package com.example.quizpoly.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.example.quizpoly.R;
 import com.example.quizpoly.Sound.App;
@@ -65,17 +68,4 @@ public class SettingActivity extends AppCompatActivity {
         App.getMusicPlayer().setting(switchBG.isChecked(), switchSound.isChecked());
         finish();
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        App.getMusicPlayer().pauseBgMusic();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        App.getMusicPlayer().resumeBgMusic();
-    }
-
 }

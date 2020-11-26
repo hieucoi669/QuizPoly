@@ -118,7 +118,6 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this,MenuActivity.class);
         intent.putExtra("username","backdoor");
         startActivity(intent);
-        finish();
     }
 
 }

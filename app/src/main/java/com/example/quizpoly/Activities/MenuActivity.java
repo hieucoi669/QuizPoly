@@ -13,9 +13,15 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.bumptech.glide.Glide;
 import com.example.quizpoly.R;
@@ -27,7 +33,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
+public class MenuActivity extends AppCompatActivity implements View.OnClickListener, LifecycleObserver {
 
     UserDAO userDAO;
     User u;
@@ -42,6 +48,8 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
@@ -243,16 +251,21 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onAppBackgrounded() {
         App.getMusicPlayer().pauseBgMusic();
+        //App in background
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void onAppForegrounded() {
+        App.getMusicPlayer().resumeBgMusic();
+        // App in foreground
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        App.getMusicPlayer().resumeBgMusic();
-
+    public void onBackPressed() {
+        super.onBackPressed();
+        App.getMusicPlayer().pauseBgMusic();
     }
 }
