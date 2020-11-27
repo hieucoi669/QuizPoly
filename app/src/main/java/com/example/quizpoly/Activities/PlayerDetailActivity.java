@@ -43,7 +43,6 @@ public class PlayerDetailActivity extends AppCompatActivity {
 
         userDAO = new UserDAO(this);
 
-        Log.i("check", "Detail");
         Intent i = getIntent();
         username = i.getStringExtra("username");
 
@@ -54,7 +53,7 @@ public class PlayerDetailActivity extends AppCompatActivity {
             Glide.with(this).load(stringUri).into(ivAvatar);
         }
 
-        tvDisplayName.setText(u.getUsername());
+        tvDisplayName.setText(u.getDisplayname());
         int numberOfTimePlayed = (int) userDAO.numberOfTimePlayed(username);
         tvNumberOfTimePlayed.setText("Tổng số lần chơi: " + numberOfTimePlayed);
 

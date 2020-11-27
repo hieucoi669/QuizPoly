@@ -497,16 +497,5 @@ public class QuizsActivity extends AppCompatActivity implements View.OnClickList
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        App.getMusicPlayer().pauseBgMusic();
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        App.getMusicPlayer().resumeBgMusic();
-//    }
+    
 }

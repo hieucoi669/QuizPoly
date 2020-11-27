@@ -2,6 +2,7 @@ package com.example.quizpoly.Activities;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -33,7 +34,8 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MenuActivity extends AppCompatActivity implements View.OnClickListener, LifecycleObserver {
+public class MenuActivity extends AppCompatActivity
+        implements View.OnClickListener, View.OnTouchListener, LifecycleObserver {
 
     UserDAO userDAO;
     User u;
@@ -44,6 +46,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     Button btnConfirm, btnCancel;
     TextInputLayout tilPassword;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +85,11 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         cvLeaderBoard.setOnClickListener(this);
         cvSettings.setOnClickListener(this);
         cvStatistics.setOnClickListener(this);
+
+        cvPlay.setOnTouchListener(this);
+        cvLeaderBoard.setOnTouchListener(this);
+        cvSettings.setOnTouchListener(this);
+        cvStatistics.setOnTouchListener(this);
     }
 
     public void logout(View view) {
@@ -146,23 +154,15 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(checkPassDialog()){
-                    dialog.dismiss();
-                    Intent intent = new Intent(MenuActivity.this, EditActivity.class);
-                    intent.putExtra("username",username);
-                    startActivity(intent);
-                }
-            }
-        });
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnConfirm.setOnClickListener(view2 -> {
+            if(checkPassDialog()){
                 dialog.dismiss();
+                Intent intent = new Intent(MenuActivity.this, EditActivity.class);
+                intent.putExtra("username",username);
+                startActivity(intent);
             }
         });
+        btnCancel.setOnClickListener(view1 -> dialog.dismiss());
     }
 
     public void toResult(View v){
@@ -175,41 +175,38 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(i);
     }
 
-    private void shrink(View cardView){
-        cardView.setOnTouchListener((view, motionEvent) -> {
-            switch (motionEvent.getAction()){
-                case MotionEvent.ACTION_DOWN:
-                    ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(cardView,
-                            "scaleX", 0.9f);
-                    ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(cardView,
-                            "scaleY", 0.9f);
-                    scaleDownX.setDuration(100);
-                    scaleDownY.setDuration(100);
+    private void shrink(View cardView, MotionEvent motionEvent){
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                ObjectAnimator scaleDownX = ObjectAnimator.ofFloat(cardView,
+                        "scaleX", 0.9f);
+                ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(cardView,
+                        "scaleY", 0.9f);
+                scaleDownX.setDuration(100);
+                scaleDownY.setDuration(100);
 
-                    AnimatorSet scaleDown = new AnimatorSet();
-                    scaleDown.play(scaleDownX).with(scaleDownY);
+                AnimatorSet scaleDown = new AnimatorSet();
+                scaleDown.play(scaleDownX).with(scaleDownY);
 
-                    scaleDown.start();
+                scaleDown.start();
+                break;
 
-                    break;
+            case MotionEvent.ACTION_UP:
+                ObjectAnimator scaleDownX2 = ObjectAnimator.ofFloat(
+                        cardView, "scaleX", 1f);
+                ObjectAnimator scaleDownY2 = ObjectAnimator.ofFloat(
+                        cardView, "scaleY", 1f);
+                scaleDownX2.setDuration(100);
+                scaleDownY2.setDuration(100);
 
-                case MotionEvent.ACTION_UP:
-                    ObjectAnimator scaleDownX2 = ObjectAnimator.ofFloat(
-                            cardView, "scaleX", 1f);
-                    ObjectAnimator scaleDownY2 = ObjectAnimator.ofFloat(
-                            cardView, "scaleY", 1f);
-                    scaleDownX2.setDuration(100);
-                    scaleDownY2.setDuration(100);
+                AnimatorSet scaleUp = new AnimatorSet();
+                scaleUp.play(scaleDownX2).with(scaleDownY2);
 
-                    AnimatorSet scaleUp = new AnimatorSet();
-                    scaleUp.play(scaleDownX2).with(scaleDownY2);
-
-                    scaleUp.start();
-
-                    break;
-            }
-            return false;
-        });
+                scaleUp.start();
+                break;
+            default:
+                break;
+        }
     }
 
     private boolean checkPassDialog(){
@@ -233,20 +230,32 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        int id = view.getId();
+        if(id == R.id.cardViewPlay){
+            shrink(cvPlay, motionEvent);
+        }else if(id == R.id.cardViewLeaderBoard){
+            shrink(cvLeaderBoard, motionEvent);
+        }else if(id == R.id.cardViewSettings){
+            shrink(cvSettings, motionEvent);
+        }else if(id == R.id.cardViewStatistics){
+            shrink(cvStatistics, motionEvent);
+        }
+        return false;
+    }
+
     @Override
     public void onClick(View view) {
         int id = view.getId();
         if(id == R.id.cardViewPlay){
-            shrink(cvPlay);
             play();
         }else if(id == R.id.cardViewLeaderBoard){
-            shrink(cvLeaderBoard);
             leaderBoard();
         }else if(id == R.id.cardViewSettings){
-            shrink(cvSettings);
             setting();
         }else if(id == R.id.cardViewStatistics){
-            shrink(cvStatistics);
             statistics();
         }
     }

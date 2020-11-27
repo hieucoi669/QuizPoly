@@ -81,7 +81,7 @@ public class RecAdapter extends RecyclerView.Adapter<RecAdapter.ViewHolder>{
         if(u.getStringUri() != null){
             Glide.with(context).load(u.getStringUri()).into(holder.ivAvatar);
         }
-        holder.tvDisplayName.setText(username);
+        holder.tvDisplayName.setText(u.getDisplayname());
         holder.tvScore.setText(list.get(position).getNumCorrectAnswer() + "/10");
         int time = list.get(position).getTime();
 
