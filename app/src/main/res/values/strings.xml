@@ -1,3 +1,116 @@
 <resources>
     <string name="app_name">QuizPoly</string>
+
+    <!--Edit Activity-->
+
+    <string name="edit_textView_title">Thay đổi thông tin</string>
+    <string name="edit_hint_username">Tên tài khoản: %1$s </string>
+    <string name="edit_hint_displayName">Tên hiển thị</string>
+    <string name="edit_hint_password">Mật khẩu mới</string>
+    <string name="edit_hint_new_password">Nhập lại mật khẩu mới</string>
+    <string name="edit_button_change">Thay đổi</string>
+
+    <!--LeaderBoardActivity-->
+
+    <string name="leader_hint_find">Tìm theo tên người chơi</string>
+
+    <!--LoginActivity-->
+
+    <string name="login_hint_username">Tên đăng nhập</string>
+    <string name="login_hint_password">Mật khẩu</string>
+    <string name="login_button_sign_in">Đăng nhập</string>
+    <string name="login_button_sign_up">Đăng kí</string>
+
+    <!--MenuActivity-->
+
+    <string name="menu_text_view_display_name">Tên hiển thị</string>
+    <string name="menu_text_view_username">Tên đăng nhập</string>
+    <string name="menu_text_view_start">Bắt đầu</string>
+    <string name="menu_text_view_leader_board">Bảng xếp hạng</string>
+    <string name="menu_text_view_setting">Cài đặt</string>
+    <string name="menu_text_view_statistic">Thống kê</string>
+
+    <!--OneTimeActivity-->
+
+    <string name="onetime_text_view_title">Chọn thông tin đại diện</string>
+    <string name="onetime_text_view_welcome">Chào mừng bạn đến với QuizPoly</string>
+    <string name="onetime_text_view_input_display_name">Mời bạn nhập tên</string>
+    <string name="onetime_hint_display_name">Tên của bạn</string>
+    <string name="onetime_button_start">Bắt đầu</string>
+
+    <!--PlayerDetailActivity-->
+
+    <string name="player_detail_button_close">Đóng</string>
+
+    <!--ResultActivity-->
+
+    <string name="result_button_share">Chia sẻ</string>
+    <string name="result_button_play_again">Chơi lại</string>
+
+    <!--SettingActivity-->
+
+    <string name="setting_text_view_switch_sound">Âm thanh</string>
+    <string name="setting_text_view_switch_background_music">Nhạc nền</string>
+    <string name="setting_button_back">Quay về</string>
+
+    <!--SignUpActivity-->
+
+    <string name="sign_up_hint_username">Tên đăng nhập</string>
+    <string name="sign_up_hint_password">Mật Khẩu</string>
+    <string name="sign_up_hint_re_password">Nhập lại mật khẩu</string>
+    <string name="sign_up_button_sign_up">Đăng kí</string>
+    <string name="sign_up_button_back">Trở lại</string>
+
+    <!--StatisticActivity-->
+
+    <string name="statistic_text_view_questionHR">Câu hỏi có tỉ lệ trả lời đúng cao nhất:</string>
+    <string name="statistic_text_view_questionLR">Câu hỏi có tỉ lệ trả lời đúng thấp nhất:</string>
+    <string name="statistic_button_back">Quay về</string>
+
+    <!--DialogChoosePic-->
+
+    <string name="dialog_choose_pic_text_view_title">Chọn ảnh đại diện</string>
+    <string name="dialog_choose_pic_button_album">Album ảnh</string>
+    <string name="dialog_choose_pic_button_camera">Camera</string>
+
+    <!--DialogPassword-->
+
+    <string name="dialog_password_text_view_title">Thay đổi thông tin:</string>
+    <string name="dialog_password_text_view_input_password">Vui lòng nhập password để tiếp tục!</string>
+    <string name="dialog_password_hint_password">Mật khẩu</string>
+    <string name="dialog_password_button_confirm">Xác nhận</string>
+    <string name="dialog_password_button_cancel">Hủy</string>
+
+
+    <string name="menu_username">\@%1$s</string>
+    <string name="display_name_error_null">Tên hiển thị không được để trống!</string>
+    <string name="display_name_error_length">Tên hiển thị có độ dài từ 5–20 kí tự!</string>
+    <string name="display_name_error">Tên hiển thị không hợp lệ</string>
+    <string name="player_detail_time_played">Tổng số lần chơi: %1$d</string>
+    <string name="player_detail_average_time">Thời gian trung bình mỗi lần chơi: %1$s</string>
+    <string name="player_detail_correct_rate">Tỷ lệ trả lời đúng: %1$s %%</string>
+    <string name="quiz_progress_question">%1$d/%2$d</string>
+    <string name="quiz_on_press_back_toast">Nhấn quay về thêm 1 lần nữa để thoát!</string>
+    <string name="result_congratulation_message">Chúc mừng %1$s!</string>
+    <string name="result_total_time_message">Tổng thời gian %1$s</string>
+    <string name="result_total_correct_ans_message">Bạn đã trả lời đúng %1$d trên 10 câu</string>
+    <string name="result_share_title">"Chia sẻ ảnh: "</string>
+    <string name="sign_up_success_message">Đăng kí thành công!</string>
+    <string name="sign_up_fail_message">Đăng kí không thành công!</string>
+    <string name="ed_username_error_null">Tên đăng nhập không được để trống!</string>
+    <string name="ed_username_error_length">Tên đăng nhập có độ dài từ 5–20 kí tự!</string>
+    <string name="ed_username_error_exist">Tên đăng nhập đã tồn tại!</string>
+    <string name="ed_username_error">Tên đăng nhập không hợp lệ</string>
+    <string name="ed_password_error_null">Mật khẩu không được để trống!</string>
+    <string name="ed_password_error_length">Mật khẩu có độ dài từ 5–20 kí tự!</string>
+    <string name="ed_password_error">Mật khẩu không hợp lệ</string>
+    <string name="ed_password_error_match">Mật khẩu không trùng khớp!</string>
+    <string name="statistic_not_enough_data">Chưa đủ dữ liệu!</string>
+    <string name="login_log_success_message">Đăng nhập thành công</string>
+    <string name="ed_username_error_not_exist">Tên tài khoản không tồn tại!</string>
+    <string name="ed_password_error_wrong">Mật khẩu bạn nhập không đúng!</string>
+    <string name="desc">Just an Image 4Head</string>
+    <string name="quiz_clock_time_default">15</string>
+    <string name="list_item_count_correct_ans">%1$d/10</string>
+    <string name="one_time_camera_message_fail">Không thể truy cập camera!</string>
 </resources>

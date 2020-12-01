@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.SplashScreen"
+    tools:context="vn.poly.quiz.activities.SplashScreen"
     android:gravity="center"
-    android:orientation="vertical"
-    android:background="@color/backGroundLogo">
+    android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/toplogo"
+        android:id="@+id/topLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo"/>
+        android:src="@drawable/logo"
+        android:contentDescription="@string/desc" />
     <ImageView
-        android:id="@+id/botlogo"
+        android:id="@+id/botLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logotext"/>
+        android:src="@drawable/logo_text"
+        android:contentDescription="@string/desc" />
 
 </LinearLayout>

@@ -4,18 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.MenuActivity"
-    android:gravity="center|top"
-    android:background="@color/backGroundLogo">
+    tools:context="vn.poly.quiz.activities.MenuActivity"
+    android:gravity="center|top">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/linearLayoutTop"
+        android:id="@+id/cvLayoutTop"
         android:layout_marginTop="40dp"
         android:layout_width="300dp"
         android:layout_height="100dp"
         android:elevation="16dp"
-        app:cardCornerRadius="10dp"
-        android:onClick="edit">
+        app:cardCornerRadius="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,20 +35,20 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/tvTenHienThi"
+                    android:id="@+id/tvDisplayNameMenu"
                     android:layout_width="110dp"
                     android:layout_height="20dp"
-                    android:text="Tên hiển thị"
+                    android:text="@string/menu_text_view_display_name"
                     android:textSize="16sp"
                     android:textColor="@color/white"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:layout_marginTop="10dp"
-                    android:id="@+id/tvTenDangNhap"
+                    android:id="@+id/tvUsernameLogin"
                     android:layout_width="110dp"
                     android:layout_height="20dp"
-                    android:text="Tên Đăng nhập"
+                    android:text="@string/menu_text_view_username"
                     android:textSize="12sp"
                     android:textColor="@color/white"
                     android:textStyle="italic"/>
@@ -58,13 +56,14 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/ivLogout"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/ic_logout"
                 android:background="@drawable/border_icon"
                 android:padding="8dp"
                 android:alpha="0.6"
-                android:onClick="logout"/>
+                android:contentDescription="@string/desc" />
 
         </LinearLayout>
 
@@ -72,12 +71,13 @@
 
     <ImageView
         android:id="@+id/ivLogoText"
-        android:layout_below="@+id/linearLayoutTop"
+        android:layout_below="@+id/cvLayoutTop"
         android:layout_width="300dp"
         android:layout_height="70dp"
-        android:src="@drawable/logotext"
+        android:src="@drawable/logo_text"
         android:layout_marginTop="70dp"
-        android:onClick="toResult"/>
+        android:onClick="toResult"
+        android:contentDescription="@string/desc" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewPlay"
@@ -99,13 +99,14 @@
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:src="@drawable/ic_play"/>
+                android:src="@drawable/ic_play"
+                android:contentDescription="@string/desc" />
 
             <TextView
                 android:layout_marginTop="20dp"
                 android:layout_width="60dp"
                 android:layout_height="20dp"
-                android:text="Bắt đầu"
+                android:text="@string/menu_text_view_start"
                 android:textAlignment="center"
                 android:textColor="#006517"
                 android:textSize="16sp"
@@ -118,11 +119,11 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewLeaderBoard"
         android:layout_below="@+id/ivLogoText"
-        android:layout_toRightOf="@+id/cardViewPlay"
+        android:layout_toEndOf="@+id/cardViewPlay"
         android:layout_width="140dp"
         android:layout_height="170dp"
         android:layout_marginTop="60dp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:elevation="8dp"
         app:cardCornerRadius="10dp">
 
@@ -136,13 +137,14 @@
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:src="@drawable/ic_trophy"/>
+                android:src="@drawable/ic_trophy"
+                android:contentDescription="@string/desc" />
 
             <TextView
                 android:layout_marginTop="20dp"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="Bảng xếp hạng"
+                android:text="@string/menu_text_view_leader_board"
                 android:textColor="#715B00"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -171,13 +173,14 @@
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:src="@drawable/ic_settings"/>
+                android:src="@drawable/ic_settings"
+                android:contentDescription="@string/desc" />
 
             <TextView
                 android:layout_marginTop="20dp"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="Cài đặt"
+                android:text="@string/menu_text_view_setting"
                 android:textColor="#5F2501"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -190,11 +193,11 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewStatistics"
         android:layout_below="@+id/cardViewLeaderBoard"
-        android:layout_toRightOf="@+id/cardViewSettings"
+        android:layout_toEndOf="@+id/cardViewSettings"
         android:layout_width="180dp"
         android:layout_height="130dp"
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:elevation="8dp"
         app:cardCornerRadius="10dp">
 
@@ -208,13 +211,14 @@
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:src="@drawable/ic_pie_chart"/>
+                android:src="@drawable/ic_pie_chart"
+                android:contentDescription="@string/desc" />
 
             <TextView
                 android:layout_marginTop="20dp"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="Thống kê"
+                android:text="@string/menu_text_view_statistic"
                 android:textColor="#006774"
                 android:textSize="16sp"
                 android:textStyle="bold"

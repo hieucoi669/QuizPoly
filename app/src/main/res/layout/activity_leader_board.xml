@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.LeaderBoardActivity"
+    tools:context="vn.poly.quiz.activities.LeaderBoardActivity"
     android:orientation="vertical"
-    android:padding="8dp"
-    android:background="#F5FF8C">
+    android:padding="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,10 +20,11 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:src="@drawable/ic_back"
-            android:alpha="0.8"/>
+            android:alpha="0.8"
+            android:contentDescription="@string/desc" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:id="@+id/edSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +34,7 @@
                 android:inputType="textCapWords"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tìm theo tên người chơi"/>
+                android:hint="@string/leader_hint_find"/>
 
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>

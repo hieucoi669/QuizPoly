@@ -1,45 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.quizpoly">
+    package="vn.poly.quiz">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="image/jpeg" />
+        </intent>
+    </queries>
 
     <application
-        android:name=".Sound.App"
+        android:name="vn.poly.quiz.sound.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_logo"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.QuizPoly.NoActionBar">
-        <activity android:name=".Activities.EditActivity"
+        android:theme="@style/Theme.QuizPoly.NoActionBar"
+        android:fullBackupContent="@xml/backup_descriptor">
+        <activity android:name="vn.poly.quiz.activities.EditActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.SettingActivity"
+        <activity android:name="vn.poly.quiz.activities.SettingActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.SignUpActivity"
+        <activity android:name="vn.poly.quiz.activities.SignUpActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.MenuActivity"
+        <activity android:name="vn.poly.quiz.activities.MenuActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.LoginActivity"
+        <activity android:name="vn.poly.quiz.activities.LoginActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.ResultActivity"
+        <activity android:name="vn.poly.quiz.activities.ResultActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.QuizsActivity"
+        <activity android:name="vn.poly.quiz.activities.QuizActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.LeaderBoardActivity"
+        <activity android:name="vn.poly.quiz.activities.LeaderBoardActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.StatisticsActivity"
+        <activity android:name="vn.poly.quiz.activities.StatisticsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.PlayerDetailActivity"
+        <activity android:name="vn.poly.quiz.activities.PlayerDetailActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".Activities.OneTimeActivity"
+            android:name="vn.poly.quiz.activities.OneTimeActivity"
             android:theme="@style/Theme.QuizPoly.NoActionBar"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.SplashScreen"
+        <activity android:name="vn.poly.quiz.activities.SplashScreen"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,7 +58,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.quizpoly.Activities"
+            android:authorities="vn.poly.quiz.activities"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

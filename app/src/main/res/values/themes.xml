@@ -17,7 +17,9 @@
     <style name="Theme.QuizPoly.NoActionBar" parent="Theme.QuizPoly">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@color/backGroundLogo</item>
 <!--        <item name="android:windowFullscreen">true</item>-->
 <!--        <item name="android:windowContentOverlay">@null</item>-->
     </style>
+
 </resources>

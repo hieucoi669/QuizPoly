@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.PlayerDetailActivity"
+    tools:context="vn.poly.quiz.activities.PlayerDetailActivity"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="32dp"
-    android:background="@color/backGroundLogo">
+    android:padding="32dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical"
         android:gravity="center">
@@ -42,7 +41,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/tvDisplayNamePD"
-                    tools:text="Tran Minh Duc"
                     android:textAlignment="center"
                     android:textSize="24sp"
                     android:textStyle="bold"
@@ -53,7 +51,6 @@
                     android:id="@+id/tvNumberOfTimePlayed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="Tổng số lần chơi: 7"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
@@ -62,7 +59,6 @@
                     android:id="@+id/tvCorrectRate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="Tỷ lệ trả lời đúng: 10%"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
@@ -71,7 +67,6 @@
                     android:id="@+id/tvAverageTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="Thời gian trung bình: 1:22s"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
@@ -92,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:textStyle="bold"
-            android:text="Đóng" />
+            android:text="@string/player_detail_button_close" />
 
     </LinearLayout>
 

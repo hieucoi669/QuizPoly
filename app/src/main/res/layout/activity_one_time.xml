@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.OneTimeActivity"
+    tools:context="vn.poly.quiz.activities.OneTimeActivity"
     android:orientation="vertical"
-    android:background="@color/backGroundLogo"
     android:gravity="center">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chọn thông tin đại diện"
+        android:text="@string/onetime_text_view_title"
         android:textStyle="bold"
         android:textSize="28sp"
         android:layout_marginBottom="20dp"/>
@@ -57,7 +56,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chào mừng bạn đến với QuizPoly"
+                android:text="@string/onetime_text_view_welcome"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold"/>
@@ -66,7 +65,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mời bạn nhập tên"
+                android:text="@string/onetime_text_view_input_display_name"
                 android:textSize="16sp"
                 android:textAlignment="center"
                 android:textStyle="bold" />
@@ -81,7 +80,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Tên của bạn"/>
+                    android:hint="@string/onetime_hint_display_name"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -90,7 +89,7 @@
                 android:id="@+id/btnStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bắt đầu"/>
+                android:text="@string/onetime_button_start"/>
 
         </LinearLayout>
 

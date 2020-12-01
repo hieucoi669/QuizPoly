@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.SettingActivity"
-    android:background="@color/backGroundLogo"
+    tools:context="vn.poly.quiz.activities.SettingActivity"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp">
@@ -13,7 +11,7 @@
     <LinearLayout
         android:layout_marginTop="100dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical"
         android:gravity="center|top">
@@ -29,7 +27,7 @@
                 android:layout_weight="0.3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Âm thanh"
+                android:text="@string/setting_text_view_switch_sound"
                 android:textStyle="bold"
                 android:textSize="18sp"/>
 
@@ -52,7 +50,7 @@
                 android:layout_weight="0.3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nhạc nền"
+                android:text="@string/setting_text_view_switch_background_music"
                 android:textStyle="bold"
                 android:textSize="18sp" />
 
@@ -71,7 +69,6 @@
         android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Quay về"
-        android:onClick="settingBack"/>
+        android:text="@string/setting_button_back"/>
 
 </LinearLayout>

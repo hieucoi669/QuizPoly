@@ -5,9 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".Activities.QuizsActivity">
-
-
+    tools:context="vn.poly.quiz.activities.QuizActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,7 +45,7 @@
                     android:id="@+id/tvClock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="15"
+                    android:text="@string/quiz_clock_time_default"
                     android:textColor="#ffffff"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -63,7 +61,6 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/default_border_bg"
             android:padding="16dp"
-            android:text="Trần Minh Đức tên đầy đủ là gì?"
             android:textAlignment="center"
             android:textSize="22sp" />
 
@@ -90,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="0/10"
+                tools:text="0/10"
                 android:textSize="14sp" />
 
         </LinearLayout>
@@ -109,8 +106,7 @@
                 android:padding="16dp"
                 android:textSize="18sp"
                 android:textAlignment="center"
-                android:background="@drawable/default_border_bg"
-                android:text="Trịnh Minh Đức"/>
+                android:background="@drawable/default_border_bg" />
 
         </androidx.cardview.widget.CardView>
 
@@ -128,8 +124,7 @@
                 android:padding="16dp"
                 android:textSize="18sp"
                 android:textAlignment="center"
-                android:background="@drawable/default_border_bg"
-                android:text="Nguyễn Minh Đức"/>
+                android:background="@drawable/default_border_bg" />
 
         </androidx.cardview.widget.CardView>
 
@@ -147,8 +142,7 @@
                 android:padding="16dp"
                 android:textSize="18sp"
                 android:textAlignment="center"
-                android:background="@drawable/default_border_bg"
-                android:text="Lê Minh Đức"/>
+                android:background="@drawable/default_border_bg" />
 
         </androidx.cardview.widget.CardView>
 
@@ -167,7 +161,7 @@
                 android:textSize="18sp"
                 android:textAlignment="center"
                 android:background="@drawable/default_border_bg"
-                android:text="DOC"/>
+                tools:text="DOC"/>
 
         </androidx.cardview.widget.CardView>
 

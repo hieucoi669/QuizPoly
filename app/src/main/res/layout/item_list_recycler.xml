@@ -22,7 +22,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="1"
-                android:padding="8dp">
+                android:padding="8dp"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -41,7 +42,7 @@
 
                 <LinearLayout
                     android:layout_weight="0.2"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -51,7 +52,7 @@
                         android:id="@+id/tvDisplayNameLB"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="Tran Minh Duc"
+                        tools:text="Donald Trump"
                         android:textStyle="bold"
                         android:textSize="20sp"/>
 
@@ -95,7 +96,8 @@
                         android:padding="8dp"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:src="@drawable/ic_search"/>
+                        android:src="@drawable/ic_search"
+                        android:contentDescription="@string/desc" />
 
                 </LinearLayout>
             </LinearLayout>
