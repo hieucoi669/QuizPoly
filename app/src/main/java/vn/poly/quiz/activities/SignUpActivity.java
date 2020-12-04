@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import vn.poly.quiz.R;
-import vn.poly.quiz.sound.App;
-import vn.poly.quiz.sound.MusicManager;
 import vn.poly.quiz.models.User;
 import vn.poly.quiz.dao.UserDAO;
 import com.google.android.material.textfield.TextInputLayout;

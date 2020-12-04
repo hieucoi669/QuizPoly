@@ -1,6 +1,5 @@
 package vn.poly.quiz.models;
 
-@SuppressWarnings("unused")
 public class QuizResult {
     private int id;
     private String quizID;

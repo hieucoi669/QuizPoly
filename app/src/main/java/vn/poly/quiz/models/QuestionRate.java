@@ -1,7 +1,6 @@
 package vn.poly.quiz.models;
 
 
-@SuppressWarnings("unused")
 public class QuestionRate {
     private String question;
     private int rate;

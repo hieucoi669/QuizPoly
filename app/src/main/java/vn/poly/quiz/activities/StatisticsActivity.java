@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import vn.poly.quiz.R;
 import vn.poly.quiz.dao.QuizResultDAO;
 import vn.poly.quiz.models.QuestionRate;
+import vn.poly.quiz.sound.App;
+import vn.poly.quiz.sound.MusicManager;
+
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -72,7 +75,13 @@ public class StatisticsActivity extends AppCompatActivity {
             pieChartWrong.setVisibility(View.INVISIBLE);
         }
 
-        btnReturn.setOnClickListener(view -> finish());
+        btnReturn.setOnClickListener(view -> {
+            App.getMusicPlayer().play(StatisticsActivity.this,
+                    MusicManager.buttonClick, mediaPlayer -> {
+
+            });
+            finish();
+        });
     }
 
     private void settingsPieChart(ArrayList<PieEntry> data, PieChart chart){

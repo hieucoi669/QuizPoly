@@ -54,6 +54,9 @@ public class SettingActivity extends AppCompatActivity {
         switchSound.setChecked(state);
     }
     public void settingBack() {
+        App.getMusicPlayer().play(this, MusicManager.buttonClick, mediaPlayer -> {
+
+        });
         App.getMusicPlayer().setting(this, switchBG.isChecked(), switchSound.isChecked());
         finish();
     }

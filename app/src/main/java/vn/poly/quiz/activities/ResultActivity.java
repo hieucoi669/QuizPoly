@@ -34,6 +34,8 @@ import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.emitters.StreamEmitter;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
+import vn.poly.quiz.sound.App;
+import vn.poly.quiz.sound.MusicManager;
 
 public class ResultActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -137,8 +139,14 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         int id = view.getId();
         if(id == R.id.btnShare){
+            App.getMusicPlayer().play(this, MusicManager.buttonClick, mediaPlayer -> {
+
+            });
             share();
         }else if(id == R.id.btnPlayAgain){
+            App.getMusicPlayer().play(this, MusicManager.buttonClick, mediaPlayer -> {
+
+            });
             finish();
         }
     }

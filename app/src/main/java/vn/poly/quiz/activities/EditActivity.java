@@ -40,6 +40,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import vn.poly.quiz.sound.App;
+import vn.poly.quiz.sound.MusicManager;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -118,7 +120,13 @@ public class EditActivity extends AppCompatActivity {
             });
         });
 
-        btnSua.setOnClickListener(view -> suaThongTin());
+        btnSua.setOnClickListener(view -> {
+            App.getMusicPlayer().play(EditActivity.this,
+                    MusicManager.buttonClick, mediaPlayer -> {
+
+            });
+            suaThongTin();
+        });
     }
 
     public void suaThongTin() {
