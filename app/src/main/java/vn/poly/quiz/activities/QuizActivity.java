@@ -163,7 +163,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         tv.setTypeface(null,Typeface.BOLD);
         tv.setBackground(ContextCompat.getDrawable(this, R.drawable.selected_border_bg));
         frameLayoutClock.clearAnimation();
-
+        App.getMusicPlayer().stopSound();
         answered = true;
         animation.cancel();
 
