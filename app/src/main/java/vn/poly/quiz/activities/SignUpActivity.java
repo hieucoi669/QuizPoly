@@ -59,6 +59,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 OneTimeActivity.class);
                         intent.putExtra("id",id);
                         startActivity(intent);
+                        finish();
                     }
                     else{
                         Toast.makeText(SignUpActivity.this,

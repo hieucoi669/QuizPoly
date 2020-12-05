@@ -141,8 +141,6 @@ public class EditActivity extends AppCompatActivity {
             if(selectedBitmap != null){
                 imageUri = saveImage(selectedBitmap);
                 u.setStringUri(String.valueOf(imageUri));
-            }else{
-                u.setStringUri(null);
             }
 
             try {

@@ -85,6 +85,7 @@ public class OneTimeActivity extends AppCompatActivity {
                                 MenuActivity.class);
                         i.putExtra("username",u.getUsername());
                         startActivity(i);
+                        finish();
                     }
 
                 }catch (Exception e) {
