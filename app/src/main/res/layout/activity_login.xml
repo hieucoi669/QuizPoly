@@ -14,7 +14,6 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:src="@drawable/logo"
-        android:onClick="backdoor"
         android:contentDescription="@string/desc" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -88,7 +87,6 @@
                 android:text="@string/login_button_sign_up" />
 
         </LinearLayout>
-
 
     </LinearLayout>
 

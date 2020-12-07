@@ -19,8 +19,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import vn.poly.quiz.R;
-import vn.poly.quiz.models.User;
-import vn.poly.quiz.dao.UserDAO;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,9 +37,8 @@ import vn.poly.quiz.sound.MusicManager;
 
 public class ResultActivity extends AppCompatActivity implements View.OnClickListener {
 
-    UserDAO userDAO;
     KonfettiView konfettiView;
-    String username, imageStringUri, result;
+    String displayName, imageURL, result;
     CircleImageView ivAvatarResult;
     TextView tvUsernameResult, tvScoreResult, tvTimeResult;
     Button btnShare, btnPlayAgain;
@@ -61,25 +58,22 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
         btnShare = findViewById(R.id.btnShare);
         btnPlayAgain = findViewById(R.id.btnPlayAgain);
 
-        userDAO = new UserDAO(this);
         Locale.setDefault(new Locale("vi", "VN"));
         sdf = new SimpleDateFormat("mm:ss:SS", Locale.getDefault());
 
         Bundle bundle = getIntent().getExtras();
-        username = bundle.getString("username");
+        imageURL = bundle.getString("imageURL");
+        displayName = bundle.getString("displayName");
         numCorrectAnswer = bundle.getInt("numCorrect");
         time = bundle.getInt("time");
 
-        User u = userDAO.checkUserExist(username,"username=?");
-        imageStringUri = u.getStringUri();
-
-        tvUsernameResult.setText(getString(R.string.result_congratulation_message, username));
+        tvUsernameResult.setText(getString(R.string.result_congratulation_message, displayName));
         result = getString(R.string.result_total_correct_ans_message, numCorrectAnswer);
         tvScoreResult.setText(result);
         tvTimeResult.setText(getString(R.string.result_total_time_message, sdf.format(time)));
 
-        if(imageStringUri != null){
-            Glide.with(this).load(new File(imageStringUri)).into(ivAvatarResult);
+        if(imageURL != null){
+            Glide.with(this).load(imageURL).into(ivAvatarResult);
         }
 
         confettiEffect();

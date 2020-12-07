@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.ContextWrapper;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,9 +15,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -26,17 +24,21 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import vn.poly.quiz.LoadingDialog;
 import vn.poly.quiz.R;
 import vn.poly.quiz.models.User;
-import vn.poly.quiz.dao.UserDAO;
-import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Objects;
-import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,9 +48,12 @@ public class OneTimeActivity extends AppCompatActivity {
     Bitmap selectedBitmap;
     TextInputLayout edName;
     CircleImageView ivAvatar, ivEditAvatar;
-    String id;
+    String username, password;
+    StorageReference mStorageRef;
+    DatabaseReference rootRef;
     Uri imageUri;
-    UserDAO userDAO;
+    LoadingDialog loadingDialog;
+    User u;
     private static final int SELECT_PHOTO_GALLERY = 100, SELECT_PHOTO_CAMERA = 200;
 
     @Override
@@ -56,91 +61,90 @@ public class OneTimeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_one_time);
 
-        Intent intent =  getIntent();
-        id = intent.getStringExtra("id");
+        Intent intent = getIntent();
+        username = intent.getStringExtra("username");
+        password = intent.getStringExtra("password");
 
         btnStart = findViewById(R.id.btnStart);
         ivAvatar = findViewById(R.id.ivAvatar);
         ivEditAvatar = findViewById(R.id.ivEditAvatar);
         edName = findViewById(R.id.edName);
-        userDAO = new UserDAO(this);
 
-        btnStart.setOnClickListener(view -> {
+        loadingDialog = new LoadingDialog(this);
 
-            String name = checkName();
-            if(name != null) {
-                User u = userDAO.checkUserExist(id,"id=?");
-                u.setDisplayName(name);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        rootRef = FirebaseDatabase.getInstance().getReference();
 
-                if(selectedBitmap != null){
-                    imageUri = saveImage(selectedBitmap);
-                    u.setStringUri(String.valueOf(imageUri));
-                }else{
-                    u.setStringUri(null);
-                }
+        btnStart.setOnClickListener(view -> start());
 
-                try {
-                    if(userDAO.updateUser(u)>0) {
-                        Intent i = new Intent(OneTimeActivity.this,
-                                MenuActivity.class);
-                        i.putExtra("username",u.getUsername());
-                        startActivity(i);
-                    }
-
-                }catch (Exception e) {
-                    Log.e("Onetime",e.getMessage());
-                }
-            }
-        });
-
-        ivEditAvatar.setOnClickListener(view -> {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-                    OneTimeActivity.this, android.R.style.Theme_Material_Dialog_Alert);
-
-            LayoutInflater layoutInflater = getLayoutInflater();
-            View viewD = layoutInflater.inflate(R.layout.dialog_choose_pic, null);
-
-            btnGallery = viewD.findViewById(R.id.btnGallery);
-            btnCamera = viewD.findViewById(R.id.btnCamera);
-
-            alertDialog.setView(viewD);
-
-            final AlertDialog dialog = alertDialog.create();
-            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.show();
-
-            btnCamera.setOnClickListener(view12 -> {
-                getPhotoFromCam();
-                dialog.dismiss();
-            });
-            btnGallery.setOnClickListener(view1 -> {
-                getPhotoFromGal();
-                dialog.dismiss();
-            });
-        });
+        ivEditAvatar.setOnClickListener(view -> changeImage());
     }
 
-    public String checkName(){
-        String name = null;
-        try {
-            name = Objects.requireNonNull(edName.getEditText()).getText().toString();
-            if(name.length()==0)
-            {
-                edName.setError(getString(R.string.display_name_error_null));
-                return null;
+    private void start(){
+        String displayName = checkDisplayName();
+        if(displayName != null){
+            loadingDialog.showLoadingDialog();
+            if(imageUri != null){
+                StorageReference filepath = mStorageRef.child("Images").child(username);
+                filepath.putFile(imageUri).addOnSuccessListener((UploadTask.TaskSnapshot taskSnapshot) -> {
+                    Task<Uri> result = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                    result.addOnSuccessListener(uri -> {
+                        String photoStringLink = uri.toString();
+                        u = new User(username, password, displayName, photoStringLink,
+                                username + "_" + password);
+                        changeOtherInfo();
+                    });
+                });
+            }else{
+                u = new User(username, password, displayName, null,
+                        username + "_" + password);
+                changeOtherInfo();
             }
-            if(name.length()<5 || name.length()>20)
-            {
-                edName.setError(getString(R.string.display_name_error_length));
-                return null;
-            }
-
-        }catch (Exception e)
-        {
-            edName.setError(getString(R.string.display_name_error));
         }
-        return name;
+    }
+
+    private void changeOtherInfo(){
+        DatabaseReference userRef = rootRef.child("Users").child(username);
+        userRef.setValue(u)
+                .addOnSuccessListener(aVoid -> {
+                    loadingDialog.hideLoadingDialog();
+                    Intent intent = new Intent(OneTimeActivity.this,
+                            MenuActivity.class);
+                    intent.putExtra("username", username);
+                    startActivity(intent);
+                })
+                .addOnFailureListener(e -> {
+                    loadingDialog.hideLoadingDialog();
+                    Toast.makeText(OneTimeActivity.this,
+                            "Fail 2", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void changeImage(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                OneTimeActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+
+        LayoutInflater layoutInflater = getLayoutInflater();
+        View viewD = layoutInflater.inflate(R.layout.dialog_choose_pic, null);
+
+        btnGallery = viewD.findViewById(R.id.btnGallery);
+        btnCamera = viewD.findViewById(R.id.btnCamera);
+
+        alertDialog.setView(viewD);
+
+        final AlertDialog dialog = alertDialog.create();
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+        btnCamera.setOnClickListener(view12 -> {
+            getPhotoFromCam();
+            dialog.dismiss();
+        });
+        btnGallery.setOnClickListener(view1 -> {
+            getPhotoFromGal();
+            dialog.dismiss();
+        });
     }
 
     private void getPhotoFromGal(){
@@ -162,20 +166,33 @@ public class OneTimeActivity extends AppCompatActivity {
         }
     }
 
-    private Uri saveImage(Bitmap bitmap){
-        ContextWrapper wrapper = new ContextWrapper(getApplicationContext());
-        File storageDir = wrapper.getDir(Environment.DIRECTORY_PICTURES, MODE_PRIVATE);
-        File file = new File(storageDir, UUID.randomUUID() + ".jpg");
+    private Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
 
-        try{
-            OutputStream stream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            stream.flush();
-            stream.close();
-        }catch (Exception e){
-            e.printStackTrace();
+    private String checkDisplayName(){
+        String name = null;
+        try {
+            name = Objects.requireNonNull(edName.getEditText()).getText().toString();
+            if(name.length()==0)
+            {
+                edName.setError(getString(R.string.display_name_error_null));
+                return null;
+            }
+            if(name.length()<5 || name.length()>20)
+            {
+                edName.setError(getString(R.string.display_name_error_length));
+                return null;
+            }
+
+        }catch (Exception e)
+        {
+            edName.setError(getString(R.string.display_name_error));
         }
-        return Uri.parse(file.getAbsolutePath());
+        return name;
     }
 
     @Override
@@ -185,10 +202,10 @@ public class OneTimeActivity extends AppCompatActivity {
         switch(requestCode) {
             case SELECT_PHOTO_GALLERY:
                 if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
+                    imageUri = imageReturnedIntent.getData();
                     try {
                         selectedBitmap = MediaStore.Images.Media.getBitmap(
-                                this.getContentResolver(),selectedImage);
+                                this.getContentResolver(),imageUri);
                         Glide.with(this).load(selectedBitmap).into(ivAvatar);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -198,8 +215,11 @@ public class OneTimeActivity extends AppCompatActivity {
                 break;
             case SELECT_PHOTO_CAMERA:
                 if(resultCode == RESULT_OK){
+
                     selectedBitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
                     Glide.with(this).load(selectedBitmap).into(ivAvatar);
+
+                    imageUri = getImageUri(getApplicationContext(), selectedBitmap);
                 }
         }
     }
@@ -218,4 +238,6 @@ public class OneTimeActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }

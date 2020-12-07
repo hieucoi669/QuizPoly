@@ -45,7 +45,7 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:gravity="center"
-                    android:padding="32dp">
+                    android:padding="28dp">
 
                     <TextView
                         android:textAlignment="center"
@@ -98,7 +98,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="32dp">
+                    android:padding="28dp">
 
                     <TextView
                         android:textAlignment="center"

@@ -4,14 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import vn.poly.quiz.LoadingDialog;
 import vn.poly.quiz.R;
 import vn.poly.quiz.models.User;
-import vn.poly.quiz.dao.UserDAO;
+
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -19,8 +27,9 @@ public class LoginActivity extends AppCompatActivity {
 
     TextInputLayout edUsername,edPassword;
     User u;
-    UserDAO userDAO;
     Button btnLogin, btnRegister;
+    DatabaseReference rootRef;
+    LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,35 +40,56 @@ public class LoginActivity extends AppCompatActivity {
         edPassword = findViewById(R.id.edPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnDangKyLogin);
-        userDAO = new UserDAO(this);
+
+        loadingDialog = new LoadingDialog(this);
+
+        rootRef = FirebaseDatabase.getInstance().getReference();
 
         btnLogin.setOnClickListener(view -> login());
         btnRegister.setOnClickListener(view -> register());
     }
 
-    public void login()
-    {
+    public void login() {
         String user = checkUsername();
         String pass = checkPassword();
+        if(user != null && pass != null){
+            loadingDialog.showLoadingDialog();
+            Query query = rootRef.child("Users").orderByChild("auth").equalTo(user + "_" + pass);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
 
-        if(user != null && pass != null)
-        {
-            Toast.makeText(this, getString(R.string.login_log_success_message),
-                    Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-            intent.putExtra("username",u.getUsername());
-            startActivity(intent);
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            u = data.getValue(User.class);
+                        }
+                        loadingDialog.hideLoadingDialog();
+
+                        Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                        intent.putExtra("username", u.getUsername());
+                        startActivity(intent);
+                    } else {
+                        loadingDialog.hideLoadingDialog();
+                        Toast.makeText(LoginActivity.this,
+                                getString(R.string.ed_password_error_wrong), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NotNull DatabaseError databaseError) {
+                    Toast.makeText(LoginActivity.this,
+                            "DOC", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
-    public void register()
-    {
+    public void register() {
         Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
         startActivity(intent);
     }
 
-    private String checkUsername()
-    {
+    private String checkUsername() {
         edUsername.setError(null);
         try{
             String username = Objects.requireNonNull(
@@ -69,14 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                 edUsername.setError(getString(R.string.ed_username_error_null));
                 return null;
             }
-
-            u = userDAO.checkUserExist(username,"username=?");
-            if(u == null){
-                edUsername.setError(getString(R.string.ed_username_error_not_exist));
-                return null;
-            }else{
-                return username;
-            }
+            return username;
         }catch (Exception e){
             edUsername.setError(getString(R.string.ed_username_error));
             return null;
@@ -91,31 +114,11 @@ public class LoginActivity extends AppCompatActivity {
                 edPassword.setError(getString(R.string.ed_password_error_null));
                 return null;
             }
-            if(u != null){
-                if(u.getPassword().equals(pass)){
-                    return pass;
-                }else{
-                    edPassword.setError(getString(R.string.ed_password_error_wrong));
-                    return null;
-                }
-            }else{
-                return null;
-            }
+            return pass;
         }catch (Exception e){
             edPassword.setError(getString(R.string.ed_password_error));
             return null;
         }
-    }
-
-    public void backdoor(View view){
-        if(userDAO.checkUserExist("backdoor","username=?")==null)
-        {
-            User u = new User("backdoor","backdoor","backdoor",null,"backdoor");
-            userDAO.insertUser(u);
-        }
-        Intent intent = new Intent(this,MenuActivity.class);
-        intent.putExtra("username","backdoor");
-        startActivity(intent);
     }
 
 }

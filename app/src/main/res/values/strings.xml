@@ -95,8 +95,6 @@
     <string name="result_total_time_message">Tổng thời gian %1$s</string>
     <string name="result_total_correct_ans_message">Bạn đã trả lời đúng %1$d trên 10 câu</string>
     <string name="result_share_title">"Chia sẻ ảnh: "</string>
-    <string name="sign_up_success_message">Đăng kí thành công!</string>
-    <string name="sign_up_fail_message">Đăng kí không thành công!</string>
     <string name="ed_username_error_null">Tên đăng nhập không được để trống!</string>
     <string name="ed_username_error_length">Tên đăng nhập có độ dài từ 5–20 kí tự!</string>
     <string name="ed_username_error_exist">Tên đăng nhập đã tồn tại!</string>
@@ -106,11 +104,13 @@
     <string name="ed_password_error">Mật khẩu không hợp lệ</string>
     <string name="ed_password_error_match">Mật khẩu không trùng khớp!</string>
     <string name="statistic_not_enough_data">Chưa đủ dữ liệu!</string>
-    <string name="login_log_success_message">Đăng nhập thành công</string>
-    <string name="ed_username_error_not_exist">Tên tài khoản không tồn tại!</string>
     <string name="ed_password_error_wrong">Mật khẩu bạn nhập không đúng!</string>
     <string name="desc">Just an Image 4Head</string>
     <string name="quiz_clock_time_default">15</string>
     <string name="list_item_count_correct_ans">%1$d/10</string>
     <string name="one_time_camera_message_fail">Không thể truy cập camera!</string>
+    <string name="dialog_loading_text">Loading…</string>
+    <string name="dialog_no_internet_title">Không có kết nối mạng!</string>
+    <string name="dialog_no_internet_btn_confirm">Xác nhận</string>
+    <string name="dialog_no_internet_message">Vui lòng kiểm tra lại kết nối mạng!</string>
 </resources>

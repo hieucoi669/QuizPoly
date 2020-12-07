@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,12 +26,20 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.bumptech.glide.Glide;
 
+import vn.poly.quiz.LoadingDialog;
 import vn.poly.quiz.R;
 import vn.poly.quiz.sound.App;
 import vn.poly.quiz.sound.MusicManager;
 import vn.poly.quiz.models.User;
-import vn.poly.quiz.dao.UserDAO;
+
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -39,9 +48,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MenuActivity extends AppCompatActivity
         implements View.OnClickListener, View.OnTouchListener, LifecycleObserver {
 
-    UserDAO userDAO;
     User u;
-    String username, displayName,stringUri;
+    String username, displayName, imageURL, password;
     CircleImageView ivAvatar;
     TextView tvDisplayName, tvUsername;
     CardView cvPlay, cvLeaderBoard, cvSettings, cvStatistics;
@@ -49,6 +57,8 @@ public class MenuActivity extends AppCompatActivity
     TextInputLayout tilPassword;
     CardView cvLayoutTop;
     ImageView ivLogout;
+    DatabaseReference mDatabase;
+    LoadingDialog loadingDialog;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -58,12 +68,6 @@ public class MenuActivity extends AppCompatActivity
 
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
-        Intent intent = getIntent();
-        username = intent.getStringExtra("username");
-        userDAO = new UserDAO(this);
-        u = userDAO.checkUserExist(username,"username=?");
-        displayName = u.getDisplayName();
-        stringUri = u.getStringUri();
         ivAvatar = findViewById(R.id.ivAvatar);
         tvDisplayName = findViewById(R.id.tvDisplayNameMenu);
         tvUsername = findViewById(R.id.tvUsernameLogin);
@@ -74,16 +78,28 @@ public class MenuActivity extends AppCompatActivity
         cvLayoutTop = findViewById(R.id.cvLayoutTop);
         ivLogout = findViewById(R.id.ivLogout);
 
-        if(stringUri != null)
-        {
-            Glide.with(this)
-                    .load(stringUri)
-                    .placeholder(R.drawable.avatar_holder)
-                    .into(ivAvatar);
-        }
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.showLoadingDialog();
 
-        tvDisplayName.setText(displayName);
-        tvUsername.setText(getString(R.string.menu_username, username));
+        Intent intent = getIntent();
+        username = intent.getStringExtra("username");
+
+        mDatabase = FirebaseDatabase.getInstance().getReference("Users");
+
+        mDatabase.child(username).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+
+                u = dataSnapshot.getValue(User.class);
+                setUserInfo(u);
+                loadingDialog.hideLoadingDialog();
+            }
+
+            @Override
+            public void onCancelled(@NotNull DatabaseError error) {
+                Log.i("Firebase", "Failed to read value.", error.toException());
+            }
+        });
 
         App.getMusicPlayer().playBgMusic(this, MusicManager.bgMusicList);
 
@@ -99,6 +115,23 @@ public class MenuActivity extends AppCompatActivity
 
         cvLayoutTop.setOnClickListener(view -> editUser());
         ivLogout.setOnClickListener(view -> logOut());
+    }
+
+    private void setUserInfo(User u){
+        displayName = u.getDisplayName();
+        imageURL = u.getImageURL();
+        password = u.getPassword();
+
+        if(imageURL != null)
+        {
+            Glide.with(this)
+                    .load(imageURL)
+                    .placeholder(R.drawable.avatar_holder)
+                    .into(ivAvatar);
+        }
+
+        tvDisplayName.setText(displayName);
+        tvUsername.setText(getString(R.string.menu_username, username));
     }
 
     public void logOut() {
@@ -138,6 +171,8 @@ public class MenuActivity extends AppCompatActivity
         });
         Intent intent = new Intent(this, QuizActivity.class);
         intent.putExtra("username",username);
+        intent.putExtra("displayName", displayName);
+        intent.putExtra("imageURL", imageURL);
         startActivity(intent);
     }
 
@@ -168,20 +203,13 @@ public class MenuActivity extends AppCompatActivity
                 dialog.dismiss();
                 Intent intent = new Intent(MenuActivity.this, EditActivity.class);
                 intent.putExtra("username",username);
+                intent.putExtra("displayName",displayName);
+                intent.putExtra("password",password);
+                intent.putExtra("imageURL",imageURL);
                 startActivity(intent);
             }
         });
         btnCancel.setOnClickListener(view1 -> dialog.dismiss());
-    }
-
-    public void toResult(View v){
-        Intent i = new Intent(this, ResultActivity.class);
-        Bundle b = new Bundle();
-        b.putString("username", "backdoor");
-        b.putInt("numCorrect", 2);
-        b.putInt("time", 23000);
-        i.putExtras(b);
-        startActivity(i);
     }
 
     private void shrink(View cardView, MotionEvent motionEvent){
@@ -220,14 +248,14 @@ public class MenuActivity extends AppCompatActivity
 
     private boolean checkPassDialog(){
         tilPassword.setError(null);
-        String pass = u.getPassword();
+
         try{
             String pass_input = Objects.requireNonNull(tilPassword.getEditText()).getText().toString();
             if(pass_input.length() == 0){
                 tilPassword.setError(getString(R.string.ed_password_error_null));
                 return false;
             }
-            if(pass.equals(pass_input)){
+            if(password.equals(pass_input)){
                 return true;
             }else{
                 tilPassword.setError(getString(R.string.ed_password_error_wrong));

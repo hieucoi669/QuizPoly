@@ -8,22 +8,27 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
+import vn.poly.quiz.LoadingDialog;
 import vn.poly.quiz.R;
 import vn.poly.quiz.models.User;
-import vn.poly.quiz.dao.UserDAO;
-import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
-import java.util.UUID;
 
 public class SignUpActivity extends AppCompatActivity {
-    UserDAO userDAO;
+
     TextInputLayout edUsername,edPassword,edRePassword;
     Button btnDangKy,btnBack;
-    List<String> nameList;
-    List<User> userList;
+    DatabaseReference rootRef;
+    LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,47 +40,11 @@ public class SignUpActivity extends AppCompatActivity {
         edRePassword = findViewById(R.id.edRePassword);
         btnDangKy = findViewById(R.id.btnDangKy);
         btnBack = findViewById(R.id.btnBack);
-        userDAO = new UserDAO(this);
-        btnDangKy.setOnClickListener(v -> {
-            String id;
-            String username = checkUsername();
-            String password = checkPassword();
-            id = UUID.randomUUID().toString();
-            boolean rePass = checkRePassword();
-            if(username != null && password != null && rePass)
-            {
-                User u = new User();
-                u.setId(id);
-                u.setUsername(username);
-                u.setPassword(password);
 
-                try {
-                    if(userDAO.insertUser(u)>0)
-                    {
-                        Toast.makeText(SignUpActivity.this,
-                                getString(R.string.sign_up_success_message),
-                                Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(SignUpActivity.this,
-                                OneTimeActivity.class);
-                        intent.putExtra("id",id);
-                        startActivity(intent);
-                    }
-                    else{
-                        Toast.makeText(SignUpActivity.this,
-                                getString(R.string.sign_up_fail_message),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }catch (Exception e){
-                    Log.i("AddUser", e.toString());
-                }
-                finish();
-            }
-            else{
-                Toast.makeText(SignUpActivity.this,
-                        getString(R.string.sign_up_fail_message),
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        loadingDialog = new LoadingDialog(this);
+        rootRef = FirebaseDatabase.getInstance().getReference();
+
+        btnDangKy.setOnClickListener(v -> createUser());
 
         btnBack.setOnClickListener(v -> {
             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
@@ -83,14 +52,57 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    private void createUser(){
+        String username = checkUsername();
+        String password = checkPassword();
+        boolean rePass = checkRePassword();
+
+        if(username != null && password != null && rePass){
+            loadingDialog.showLoadingDialog();
+            DatabaseReference userRef = rootRef.child("Users").child(username);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NotNull DataSnapshot snapshot) {
+                    if(!snapshot.exists()) {
+
+                        User u = new User(username, password, username + "_" + password);
+
+                        userRef.setValue(u)
+                                .addOnSuccessListener(aVoid -> {
+                                    loadingDialog.hideLoadingDialog();
+                                    Intent intent = new Intent(SignUpActivity.this,
+                                            OneTimeActivity.class);
+                                    intent.putExtra("username", username);
+                                    intent.putExtra("password", password);
+                                    startActivity(intent);
+
+                                })
+                                .addOnFailureListener(e -> {
+                                    loadingDialog.hideLoadingDialog();
+                                    Toast.makeText(SignUpActivity.this,
+                                            "Fail!", Toast.LENGTH_SHORT).show();
+                                });
+
+                    }else {
+                        loadingDialog.hideLoadingDialog();
+                        Toast.makeText(SignUpActivity.this,
+                                getString(R.string.ed_username_error_exist),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NotNull DatabaseError databaseError) {
+                    Log.i("Firebase", databaseError.getMessage());
+                }
+
+            });
+        }
+    }
+
     public String checkUsername(){
         String name = null;
-        nameList = new ArrayList<>();
-        userList = userDAO.getUserList();
-        for(User u : userList)
-        {
-            nameList.add(u.getUsername());
-        }
+
         try {
             name = Objects.requireNonNull(edUsername.getEditText()).getText().toString();
             if(name.length()==0)
@@ -103,13 +115,6 @@ public class SignUpActivity extends AppCompatActivity {
                 edUsername.setError(getString(R.string.ed_username_error_length));
                 return null;
             }
-            for(int i=0; i<nameList.size(); i++){
-                if(name.equalsIgnoreCase(nameList.get(i))){
-                    edUsername.setError(getString(R.string.ed_username_error_exist));
-                    return null;
-                }
-            }
-
         }catch (Exception e)
         {
             edUsername.setError(getString(R.string.ed_username_error));

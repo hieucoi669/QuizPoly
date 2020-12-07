@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.ContextWrapper;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,9 +15,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -27,17 +25,28 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import vn.poly.quiz.LoadingDialog;
 import vn.poly.quiz.R;
+import vn.poly.quiz.models.Quiz;
 import vn.poly.quiz.models.User;
-import vn.poly.quiz.dao.UserDAO;
-import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Objects;
-import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import vn.poly.quiz.sound.App;
@@ -48,19 +57,22 @@ public class EditActivity extends AppCompatActivity {
     CircleImageView ivAvatar, ivEditAvatar;
     TextInputLayout edPassword,edRePassword, edDisplayName;
     TextView tvUsername;
-    UserDAO userDAO;
-    String username;
-    Button btnGallery, btnCamera;
+    String username, displayName, password, imageURL;
+    Button btnGallery, btnCamera, btnSua;
     Bitmap selectedBitmap;
     Uri imageUri;
-    String stringUri,password;
-    Button btnSua;
+    StorageReference mStorageRef;
+    DatabaseReference rootRef;
+    Quiz quiz;
+    User u;
+    LoadingDialog loadingDialog;
     private static final int SELECT_PHOTO_GALLERY = 100, SELECT_PHOTO_CAMERA = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+
         ivAvatar = findViewById(R.id.ivAvatar);
         ivEditAvatar = findViewById(R.id.ivEditAvatar);
         edPassword = findViewById(R.id.edPasswordEdit);
@@ -68,25 +80,29 @@ public class EditActivity extends AppCompatActivity {
         edDisplayName = findViewById(R.id.edDisplayName);
         tvUsername = findViewById(R.id.tvUsernameEdit);
         btnSua = findViewById(R.id.btnSuaThongTin);
-        userDAO = new UserDAO(this);
+
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        rootRef = FirebaseDatabase.getInstance().getReference();
+
+        loadingDialog = new LoadingDialog(this);
 
         Intent intent =  getIntent();
         username = intent.getStringExtra("username");
+        displayName = intent.getStringExtra("displayName");
+        password = intent.getStringExtra("password");
+        imageURL = intent.getStringExtra("imageURL");
+
         tvUsername.setText(getString(R.string.edit_hint_username, username));
-        User u = userDAO.checkUserExist(username,"username=?");
-        String displayName = u.getDisplayName();
+
+        if(imageURL != null) {
+            Glide.with(this)
+                    .load(imageURL)
+                    .into(ivAvatar);
+        }
 
         if(displayName != null) {
             Objects.requireNonNull(edDisplayName.getEditText()).setText(displayName);
         }
-        stringUri = u.getStringUri();
-
-        if(stringUri != null) {
-            Glide.with(this)
-                    .load(stringUri)
-                    .into(ivAvatar);
-        }
-        password = u.getPassword();
 
         if(password != null) {
             Objects.requireNonNull(edPassword.getEditText()).setText(password);
@@ -133,32 +149,94 @@ public class EditActivity extends AppCompatActivity {
         String displayName = checkDisplayName();
         String password = checkPassword();
         boolean rePass = checkRePassword();
-        if(displayName != null && password != null && rePass)
-        {
-            User u = userDAO.checkUserExist(username,"username=?");
-            u.setDisplayName(displayName);
-            u.setPassword(password);
-            if(selectedBitmap != null){
-                imageUri = saveImage(selectedBitmap);
-                u.setStringUri(String.valueOf(imageUri));
+
+        if(displayName != null && password != null && rePass){
+            loadingDialog.showLoadingDialog();
+            if(imageUri != null){
+                StorageReference filepath = mStorageRef.child("Images").child(username);
+                filepath.putFile(imageUri)
+                        .addOnSuccessListener((UploadTask.TaskSnapshot taskSnapshot) -> {
+
+                    Task<Uri> result = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                    result.addOnSuccessListener(uri -> {
+                        String photoStringLink = uri.toString();
+                        changeImageURLInQuiz(photoStringLink);
+
+                        u = new User(username, password, displayName, photoStringLink,
+                                username + "_" + password);
+                        changeOtherInfo(displayName);
+                    });
+                });
             }else{
-                u.setStringUri(null);
-            }
-
-            try {
-                if(userDAO.updateUser(u)>0)
-                {
-                    Intent i = new Intent(EditActivity.this, MenuActivity.class);
-                    i.putExtra("username",u.getUsername());
-                    startActivity(i);
-                    finish();
-                }
-
-            }catch (Exception e)
-            {
-                Log.e("Edit",e.getMessage());
+                u = new User(username, password, displayName, imageURL,
+                        username + "_" + password);
+                changeOtherInfo(displayName);
             }
         }
+    }
+
+    private void changeOtherInfo(String displayName) {
+        DatabaseReference userRef = rootRef.child("Users").child(username);
+        userRef.setValue(u)
+                .addOnSuccessListener(aVoid -> {
+                    changeDisplayNameInQuiz(displayName);
+                    loadingDialog.hideLoadingDialog();
+                    Intent intent = new Intent(EditActivity.this,
+                            MenuActivity.class);
+                    intent.putExtra("username", username);
+                    startActivity(intent);
+                })
+                .addOnFailureListener(e -> {
+                    loadingDialog.hideLoadingDialog();
+                    Toast.makeText(EditActivity.this,
+                            "Fail 2", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void changeDisplayNameInQuiz(String displayName) {
+        if(!displayName.equals(this.displayName)){
+            Query query = rootRef.child("Quiz").orderByChild("username").equalTo(username);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            quiz = data.getValue(Quiz.class);
+                            quiz.setDisplayName(displayName);
+                            String key = quiz.getKey();
+                            rootRef.child("Quiz").child(key).setValue(quiz);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NotNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    private void changeImageURLInQuiz(String imageURL) {
+        Query query = rootRef.child("Quiz").orderByChild("username").equalTo(username);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        quiz = data.getValue(Quiz.class);
+                        quiz.setImageURL(imageURL);
+                        String key = quiz.getKey();
+                        rootRef.child("Quiz").child(key).setValue(quiz);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NotNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void getPhotoFromGal(){
@@ -179,46 +257,11 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
-    private Uri saveImage(Bitmap bitmap){
-        ContextWrapper wrapper = new ContextWrapper(getApplicationContext());
-        File storageDir = wrapper.getDir(Environment.DIRECTORY_PICTURES, MODE_PRIVATE);
-        File file = new File(storageDir, UUID.randomUUID() + ".jpg");
-
-        try{
-            OutputStream stream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            stream.flush();
-            stream.close();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return Uri.parse(file.getAbsolutePath());
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-        switch(requestCode) {
-            case SELECT_PHOTO_GALLERY:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    try {
-                        selectedBitmap = MediaStore.Images.Media.getBitmap(
-                                this.getContentResolver(),selectedImage);
-                        Glide.with(this).load(selectedBitmap).into(ivAvatar);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this,"Error!", Toast.LENGTH_LONG).show();
-                    }
-                }
-                break;
-            case SELECT_PHOTO_CAMERA:
-                if(resultCode == RESULT_OK){
-                    selectedBitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    Glide.with(this).load(selectedBitmap).into(ivAvatar);
-                }
-        }
+    private Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
     public String checkPassword(){
@@ -302,6 +345,34 @@ public class EditActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.one_time_camera_message_fail),
                         Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        switch(requestCode) {
+            case SELECT_PHOTO_GALLERY:
+                if(resultCode == RESULT_OK){
+                    imageUri = imageReturnedIntent.getData();
+                    try {
+                        selectedBitmap = MediaStore.Images.Media.getBitmap(
+                                this.getContentResolver(),imageUri);
+                        Glide.with(this).load(selectedBitmap).into(ivAvatar);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this,"Error!", Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+            case SELECT_PHOTO_CAMERA:
+                if(resultCode == RESULT_OK){
+                    selectedBitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                    Glide.with(this).load(selectedBitmap).into(ivAvatar);
+
+                    imageUri = getImageUri(getApplicationContext(), selectedBitmap);
+                }
         }
     }
 }

@@ -1,29 +1,27 @@
 package vn.poly.quiz.models;
 
 public class User {
-    private String id;
-    private String username;
-    private String password;
-    private String stringUri;
-    private String displayName;
+    public String username;
+    public String password;
+    public String displayName;
+    public String imageURL;
+    public String auth;
 
     public User() {
     }
 
-    public User(String id, String username, String password, String stringUri, String displayName) {
-        this.id = id;
+    public User(String username, String password, String auth) {
         this.username = username;
         this.password = password;
-        this.stringUri = stringUri;
+        this.auth = auth;
+    }
+
+    public User(String username, String password, String displayName, String imageURL, String auth) {
+        this.username = username;
+        this.password = password;
         this.displayName = displayName;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        this.imageURL = imageURL;
+        this.auth = auth;
     }
 
     public String getUsername() {
@@ -42,19 +40,27 @@ public class User {
         this.password = password;
     }
 
-    public String getStringUri() {
-        return stringUri;
-    }
-
-    public void setStringUri(String stringUri) {
-        this.stringUri = stringUri;
-    }
-
     public String getDisplayName() {
         return displayName;
     }
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public String getAuth() {
+        return auth;
+    }
+
+    public void setAuth(String auth) {
+        this.auth = auth;
     }
 }

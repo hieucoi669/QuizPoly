@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import vn.poly.quiz.LoadingDialog;
 import vn.poly.quiz.R;
-import vn.poly.quiz.dao.QuizResultDAO;
-import vn.poly.quiz.models.QuestionRate;
+import vn.poly.quiz.models.QuestionInfo;
 import vn.poly.quiz.sound.App;
 import vn.poly.quiz.sound.MusicManager;
 
@@ -20,18 +20,31 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class StatisticsActivity extends AppCompatActivity {
 
-    QuizResultDAO quizResultDAO;
     PieChart pieChartCorrect, pieChartWrong;
     final int[] colorClassArray = new int[]{
             Color.parseColor("#41fc03"), Color.parseColor("#ff4a4a")};
-    ArrayList<PieEntry> dataEasy, dataHard;
+    ArrayList<PieEntry> data;
     TextView tvQuestionHR, tvQuestionLR;
     Button btnReturn;
+    DatabaseReference rootRef;
+    QuestionInfo qInfo, easyQ, hardQ;
+    List<QuestionInfo> listQInfo;
+    LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,36 +57,9 @@ public class StatisticsActivity extends AppCompatActivity {
         pieChartCorrect = findViewById(R.id.pieChartCorrect);
         pieChartWrong = findViewById(R.id.pieChartWrong);
 
-        quizResultDAO = new QuizResultDAO(this);
-        QuestionRate easyQ = quizResultDAO.getQuestionRate("DESC");
-
-        if(easyQ != null){
-            dataEasy = new ArrayList<>();
-            dataEasy.add(new PieEntry(easyQ.getRate(),""));
-            dataEasy.add(new PieEntry(100 - easyQ.getRate(), ""));
-
-            settingsPieChart(dataEasy, pieChartCorrect);
-
-            tvQuestionHR.setText(easyQ.getQuestion());
-        }else{
-            tvQuestionHR.setText(R.string.statistic_not_enough_data);
-            pieChartCorrect.setVisibility(View.INVISIBLE);
-        }
-
-        QuestionRate hardQ = quizResultDAO.getQuestionRate("");
-
-        if(hardQ != null){
-            dataHard = new ArrayList<>();
-            dataHard.add(new PieEntry(hardQ.getRate(),""));
-            dataHard.add(new PieEntry(100 - hardQ.getRate(), ""));
-
-            settingsPieChart(dataHard, pieChartWrong);
-
-            tvQuestionLR.setText(hardQ.getQuestion());
-        }else{
-            tvQuestionLR.setText(R.string.statistic_not_enough_data);
-            pieChartWrong.setVisibility(View.INVISIBLE);
-        }
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.showLoadingDialog();
+        getQuestionInfoList();
 
         btnReturn.setOnClickListener(view -> {
             App.getMusicPlayer().play(StatisticsActivity.this,
@@ -84,6 +70,55 @@ public class StatisticsActivity extends AppCompatActivity {
         });
     }
 
+    private void showInfo(QuestionInfo qInfo, PieChart pieChart, TextView tv){
+        if(qInfo != null){
+            data = new ArrayList<>();
+            data.add(new PieEntry(qInfo.getNumberCorrectAnswer(),""));
+            data.add(new PieEntry(
+                    qInfo.getNumberAnswered() - qInfo.getNumberCorrectAnswer(), ""));
+
+            settingsPieChart(data, pieChart);
+
+            tv.setText(qInfo.getQuestion());
+        }else{
+            tv.setText(R.string.statistic_not_enough_data);
+            pieChart.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void getQuestionInfoList() {
+        listQInfo = new ArrayList<>();
+        rootRef = FirebaseDatabase.getInstance().getReference();
+        Query query = rootRef.child("QuestionInfo")
+                .orderByChild("numberAnswered")
+                .startAt(3);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    qInfo = data.getValue(QuestionInfo.class);
+                    listQInfo.add(qInfo);
+                }
+                sortDescending(listQInfo);
+
+                if(listQInfo.size() > 0){
+                    easyQ = listQInfo.get(0);
+                    hardQ = listQInfo.get(listQInfo.size() - 1);
+                }
+
+                showInfo(easyQ, pieChartCorrect, tvQuestionHR);
+                showInfo(hardQ, pieChartWrong, tvQuestionLR);
+                loadingDialog.hideLoadingDialog();
+            }
+
+            @Override
+            public void onCancelled(@NotNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void settingsPieChart(ArrayList<PieEntry> data, PieChart chart){
         PieDataSet pieDataSet = new PieDataSet(data,"");
         pieDataSet.setColors(colorClassArray);
@@ -91,7 +126,7 @@ public class StatisticsActivity extends AppCompatActivity {
         pieDataSet.setValueTextSize(6f);
         pieDataSet.setValueTextColor(Color.WHITE);
         pieDataSet.setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        pieDataSet.setValueFormatter(new PercentFormatter(pieChartCorrect));
+        pieDataSet.setValueFormatter(new PercentFormatter(chart));
         PieData pieData = new PieData(pieDataSet);
         chart.setData(pieData);
         chart.getLegend().setEnabled(false);
@@ -103,5 +138,17 @@ public class StatisticsActivity extends AppCompatActivity {
 //        chart.setNoDataText("Not enough data!");
 //        chart.setNoDataTextColor(Color.BLACK);
         chart.invalidate();
+    }
+
+    private void sortDescending(List<QuestionInfo> list){
+        Collections.sort(list, (qi1, qi2) -> {
+            if (qi1.getRate() < qi2.getRate()) {
+                return 1;
+            } else if(qi1.getRate() > qi2.getRate()) {
+                return -1;
+            } else{
+                return Integer.compare(qi2.getNumberAnswered(), qi1.getNumberAnswered());
+            }
+        });
     }
 }

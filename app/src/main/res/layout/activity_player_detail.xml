@@ -63,6 +63,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:minLines="2"
                     android:layout_marginBottom="32dp"
                     android:id="@+id/tvAverageTime"
                     android:layout_width="match_parent"

@@ -1,7 +1,7 @@
 package vn.poly.quiz.models;
 
 public class Question {
-    private int id;
+    private String id;
     private String question;
     private String correctAnswer;
     private String falseAnswerOne;
@@ -19,23 +19,11 @@ public class Question {
         this.falseAnswerThree = falseAnswerThree;
     }
 
-// --Commented out by Inspection START (11/27/20, 13:40):
-//    public Question(int id, String question, String correctAnswer,
-//                    String falseAnswerOne, String falseAnswerTwo, String falseAnswerThree) {
-//        this.id = id;
-//        this.question = question;
-//        this.correctAnswer = correctAnswer;
-//        this.falseAnswerOne = falseAnswerOne;
-//        this.falseAnswerTwo = falseAnswerTwo;
-//        this.falseAnswerThree = falseAnswerThree;
-//    }
-// --Commented out by Inspection STOP (11/27/20, 13:40)
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
