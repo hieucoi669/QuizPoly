@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "909428261502",
+    "project_id": "quizpoly-8a882",
+    "storage_bucket": "quizpoly-8a882.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:909428261502:android:9c251258be9430d68dce2f",
+        "android_client_info": {
+          "package_name": "vn.poly.quiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "909428261502-4r6mvtsqflb7oiiq7gbenmjkb8ae1081.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWyYlc-2yu6sK5aj_AOSy9CWNyX4ENvgw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "909428261502-4r6mvtsqflb7oiiq7gbenmjkb8ae1081.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
