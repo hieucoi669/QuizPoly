@@ -24,7 +24,6 @@ public class MusicManager implements MediaPlayer.OnPreparedListener, MediaPlayer
     private MediaPlayer mediaPlayer;
     private MediaPlayer bgMusic;
     private SharedPreferences preferences;
-//    private final Context c;
     private boolean stateMusic;
     private boolean stateSound;
 

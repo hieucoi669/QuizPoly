@@ -1,5 +1,6 @@
 package vn.poly.quiz.models;
 
+@SuppressWarnings("ALL")
 public class QuestionInfo {
     private String id;
     private String question;
@@ -44,9 +45,9 @@ public class QuestionInfo {
         return question;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
+//    public void setQuestion(String question) {
+//        this.question = question;
+//    }
 
     public Double getRate(){
         return numberCorrectAnswer*100.0/numberAnswered;

@@ -3,8 +3,10 @@ package vn.poly.quiz.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import vn.poly.quiz.LoadingDialog;
@@ -30,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     Button btnLogin, btnRegister;
     DatabaseReference rootRef;
     LoadingDialog loadingDialog;
+    CheckBox chkRemember;
+    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +44,13 @@ public class LoginActivity extends AppCompatActivity {
         edPassword = findViewById(R.id.edPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnDangKyLogin);
+        chkRemember = findViewById(R.id.chkRemember);
 
         loadingDialog = new LoadingDialog(this);
+        pref = getSharedPreferences("USER_FILE",MODE_PRIVATE);
 
         rootRef = FirebaseDatabase.getInstance().getReference();
-
+        autoLogin();
         btnLogin.setOnClickListener(view -> login());
         btnRegister.setOnClickListener(view -> register());
     }
@@ -53,35 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         String user = checkUsername();
         String pass = checkPassword();
         if(user != null && pass != null){
-            loadingDialog.showLoadingDialog();
-            Query query = rootRef.child("Users").orderByChild("auth").equalTo(user + "_" + pass);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-
-                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            u = data.getValue(User.class);
-                        }
-                        loadingDialog.hideLoadingDialog();
-
-                        Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                        intent.putExtra("username", u.getUsername());
-                        intent.putExtra("user", u);
-                        startActivity(intent);
-                    } else {
-                        loadingDialog.hideLoadingDialog();
-                        Toast.makeText(LoginActivity.this,
-                                getString(R.string.ed_password_error_wrong), Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NotNull DatabaseError databaseError) {
-                    Toast.makeText(LoginActivity.this,
-                            "DOC", Toast.LENGTH_SHORT).show();
-                }
-            });
+            checkLogin(user+"_"+pass);
         }
     }
 
@@ -122,4 +100,59 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void setAutoLogin(String auth){
+        SharedPreferences.Editor editor = pref.edit();
+
+        if(chkRemember.isChecked()){
+            editor.putString("auth", auth);
+            editor.putBoolean("remember", true);
+        }else{
+            editor.clear();
+        }
+        editor.apply();
+    }
+
+    private void autoLogin(){
+        boolean chk = pref.getBoolean("remember",false);
+        if(chk) {
+            String auth = pref.getString("auth", null);
+            checkLogin(auth);
+        }
+    }
+
+    private void checkLogin(String auth){
+        loadingDialog.showLoadingDialog();
+        Query query = rootRef.child("Users").orderByChild("auth").equalTo(auth);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        u = data.getValue(User.class);
+                    }
+                    setAutoLogin(auth);
+                    loadingDialog.hideLoadingDialog();
+
+                    Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                    intent.putExtra("username", u.getUsername());
+                    intent.putExtra("user", u);
+                    startActivity(intent);
+                } else {
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.clear();
+                    editor.apply();
+                    loadingDialog.hideLoadingDialog();
+                    Toast.makeText(LoginActivity.this,
+                            getString(R.string.ed_password_error_wrong), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NotNull DatabaseError databaseError) {
+                Toast.makeText(LoginActivity.this,
+                        "DOC", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

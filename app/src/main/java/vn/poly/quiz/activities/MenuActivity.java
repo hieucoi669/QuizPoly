@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -20,9 +21,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.bumptech.glide.Glide;
@@ -48,7 +48,7 @@ import java.util.UUID;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MenuActivity extends AppCompatActivity
-        implements View.OnClickListener, View.OnTouchListener, LifecycleObserver {
+        implements View.OnClickListener, View.OnTouchListener, DefaultLifecycleObserver {
 
     User u, loginUser;
     String username, displayName, imageURL, password, uniqueLogin;
@@ -62,6 +62,7 @@ public class MenuActivity extends AppCompatActivity
     DatabaseReference mDatabase;
     LoadingDialog loadingDialog;
     protected App mApp ;
+    boolean isListening = true;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -70,6 +71,7 @@ public class MenuActivity extends AppCompatActivity
         setContentView(R.layout.activity_menu);
 
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+
 
         ivAvatar = findViewById(R.id.ivAvatar);
         tvDisplayName = findViewById(R.id.tvDisplayNameMenu);
@@ -90,6 +92,7 @@ public class MenuActivity extends AppCompatActivity
         username = intent.getStringExtra("username");
         loginUser = (User) intent.getSerializableExtra("user");
         uniqueLogin = UUID.randomUUID().toString();
+
         if(loginUser != null){
             loginUser.setUniqueLogin(uniqueLogin);
         }
@@ -104,15 +107,18 @@ public class MenuActivity extends AppCompatActivity
             @Override
             public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
 
-                u = dataSnapshot.getValue(User.class);
-                assert u != null;
-                setUserInfo(u);
+                if(isListening){
+                    u = dataSnapshot.getValue(User.class);
+                    assert u != null;
+                    setUserInfo(u);
 
-                loadingDialog.hideLoadingDialog();
-                if (!uniqueLogin.equals(u.getUniqueLogin()) && loginUser!=null){
-                    Activity currentActivity = ((App) getApplicationContext()).getCurrentActivity();
-                    loadingDialog.uniqueLoginDialog(currentActivity);
+                    loadingDialog.hideLoadingDialog();
+                    if (!loginUser.getUniqueLogin().equals(u.getUniqueLogin()) && loginUser!=null){
+                        Activity currentActivity = ((App) getApplicationContext()).getCurrentActivity();
+                        loadingDialog.uniqueLoginDialog(currentActivity);
+                    }
                 }
+
             }
 
             @Override
@@ -155,6 +161,13 @@ public class MenuActivity extends AppCompatActivity
     }
 
     public void logOut() {
+        isListening = false;
+
+        SharedPreferences pref = getSharedPreferences("USER_FILE",MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.clear();
+        edit.apply();
+
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -317,18 +330,18 @@ public class MenuActivity extends AppCompatActivity
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onAppBackgrounded() {
-        App.getMusicPlayer().pauseBgMusic();
-
-        //App in background
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    public void onAppForegrounded() {
-        App.getMusicPlayer().resumeBgMusic();
-        // App in foreground
-    }
+//    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+//    public void onAppBackgrounded() {
+//        App.getMusicPlayer().pauseBgMusic();
+//
+//        //App in background
+//    }
+//
+//    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+//    public void onAppForegrounded() {
+//        App.getMusicPlayer().resumeBgMusic();
+//        // App in foreground
+//    }
 
     @Override
     public void onBackPressed() {
@@ -340,5 +353,17 @@ public class MenuActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         mApp.setCurrentActivity(this);
+    }
+
+    @Override
+    public void onPause(@NotNull LifecycleOwner owner) {
+        // Capture "quit" event when app is "quit"
+        App.getMusicPlayer().pauseBgMusic();
+    }
+
+    @Override
+    public void onResume(@NotNull LifecycleOwner owner) {
+        // Capture "launch" event when app is "launched"
+        App.getMusicPlayer().resumeBgMusic();
     }
 }

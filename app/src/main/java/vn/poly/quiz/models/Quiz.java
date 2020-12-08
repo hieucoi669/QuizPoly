@@ -25,9 +25,9 @@ public class Quiz {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+//    public void setKey(String key) {
+//        this.key = key;
+//    }
 
     public String getImageURL() {
         return imageURL;
@@ -41,9 +41,9 @@ public class Quiz {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+//    public void setUsername(String username) {
+//        this.username = username;
+//    }
 
     public String getDisplayName() {
         return displayName;

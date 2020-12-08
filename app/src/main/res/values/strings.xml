@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="vi">
     <string name="app_name">QuizPoly</string>
 
     <!--Edit Activity-->
@@ -116,4 +116,5 @@
     <string name="dialog_unique_login_title">Tài khoản đã bị đăng nhập</string>
     <string name="dialog_unique_login_message">Tài khoản đã bị đăng nhập trên một thiết bị khác!
         Ứng dụng sẽ tự động thoát</string>
+    <string name="login_checkbox_title">Tự động đăng nhập</string>
 </resources>

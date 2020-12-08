@@ -1,6 +1,5 @@
 package vn.poly.quiz.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -32,9 +31,7 @@ public class PlayerDetailActivity extends AppCompatActivity {
     CircleImageView ivAvatar;
     TextView tvDisplayName, tvNumberOfTimePlayed, tvCorrectRate, tvAverageTime;
     String username, imageURL, displayName;
-    @SuppressLint("SimpleDateFormat")
-    final
-    SimpleDateFormat sdf = new SimpleDateFormat("mm:ss:SS");
+    SimpleDateFormat sdf;
     Button btnClose;
     DatabaseReference rootRef;
     LoadingDialog loadingDialog;
@@ -53,6 +50,9 @@ public class PlayerDetailActivity extends AppCompatActivity {
         tvNumberOfTimePlayed = findViewById(R.id.tvNumberOfTimePlayed);
         tvCorrectRate = findViewById(R.id.tvCorrectRate);
         btnClose = findViewById(R.id.btnClose);
+
+        Locale.setDefault(new Locale("vi", "VN"));
+        sdf = new SimpleDateFormat("mm:ss:SS", Locale.getDefault());
 
         loadingDialog = new LoadingDialog(this);
         loadingDialog.showLoadingDialog();

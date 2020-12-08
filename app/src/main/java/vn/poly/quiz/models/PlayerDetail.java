@@ -1,5 +1,6 @@
 package vn.poly.quiz.models;
 
+@SuppressWarnings("ALL")
 public class PlayerDetail {
     private String username;
     private int totalPlayed;

@@ -31,39 +31,39 @@ public class Question {
         return question;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
+//    public void setQuestion(String question) {
+//        this.question = question;
+//    }
 
     public String getCorrectAnswer() {
         return correctAnswer;
     }
 
-    public void setCorrectAnswer(String correctAnswer) {
-        this.correctAnswer = correctAnswer;
-    }
+//    public void setCorrectAnswer(String correctAnswer) {
+//        this.correctAnswer = correctAnswer;
+//    }
 
     public String getFalseAnswerOne() {
         return falseAnswerOne;
     }
 
-    public void setFalseAnswerOne(String falseAnswerOne) {
-        this.falseAnswerOne = falseAnswerOne;
-    }
+//    public void setFalseAnswerOne(String falseAnswerOne) {
+//        this.falseAnswerOne = falseAnswerOne;
+//    }
 
     public String getFalseAnswerTwo() {
         return falseAnswerTwo;
     }
 
-    public void setFalseAnswerTwo(String falseAnswerTwo) {
-        this.falseAnswerTwo = falseAnswerTwo;
-    }
+//    public void setFalseAnswerTwo(String falseAnswerTwo) {
+//        this.falseAnswerTwo = falseAnswerTwo;
+//    }
 
     public String getFalseAnswerThree() {
         return falseAnswerThree;
     }
 
-    public void setFalseAnswerThree(String falseAnswerThree) {
-        this.falseAnswerThree = falseAnswerThree;
-    }
+//    public void setFalseAnswerThree(String falseAnswerThree) {
+//        this.falseAnswerThree = falseAnswerThree;
+//    }
 }
