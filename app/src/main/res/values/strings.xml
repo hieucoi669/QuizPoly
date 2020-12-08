@@ -114,5 +114,6 @@
     <string name="dialog_no_internet_btn_confirm">Xác nhận</string>
     <string name="dialog_no_internet_message">Vui lòng kiểm tra lại kết nối mạng!</string>
     <string name="dialog_unique_login_title">Tài khoản đã bị đăng nhập</string>
-    <string name="dialog_unique_login_message">Tài khoản đã bị đăng nhập trên một thiết bị khác! Bạn sẽ được chuyển về màn hình đăng nhập</string>
+    <string name="dialog_unique_login_message">Tài khoản đã bị đăng nhập trên một thiết bị khác!
+        Ứng dụng sẽ tự động thoát</string>
 </resources>
