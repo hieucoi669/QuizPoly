@@ -1,11 +1,14 @@
 package vn.poly.quiz.models;
 
-public class User {
-    public String username;
-    public String password;
-    public String displayName;
-    public String imageURL;
-    public String auth;
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private String uniqueLogin;
+    private String username;
+    private String password;
+    private String displayName;
+    private String imageURL;
+    private String auth;
 
     public User() {
     }
@@ -62,5 +65,13 @@ public class User {
 
     public void setAuth(String auth) {
         this.auth = auth;
+    }
+
+    public String getUniqueLogin() {
+        return uniqueLogin;
+    }
+
+    public void setUniqueLogin(String uniqueLogin) {
+        this.uniqueLogin = uniqueLogin;
     }
 }

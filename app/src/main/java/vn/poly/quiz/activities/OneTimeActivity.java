@@ -87,7 +87,7 @@ public class OneTimeActivity extends AppCompatActivity {
             if(imageUri != null){
                 StorageReference filepath = mStorageRef.child("Images").child(username);
                 filepath.putFile(imageUri).addOnSuccessListener((UploadTask.TaskSnapshot taskSnapshot) -> {
-                    Task<Uri> result = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                    Task<Uri> result = Objects.requireNonNull(Objects.requireNonNull(taskSnapshot.getMetadata()).getReference()).getDownloadUrl();
                     result.addOnSuccessListener(uri -> {
                         String photoStringLink = uri.toString();
                         u = new User(username, password, displayName, photoStringLink,

@@ -67,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                         intent.putExtra("username", u.getUsername());
+                        intent.putExtra("user", u);
                         startActivity(intent);
                     } else {
                         loadingDialog.hideLoadingDialog();

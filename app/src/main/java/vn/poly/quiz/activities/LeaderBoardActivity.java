@@ -41,6 +41,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
     Quiz quiz;
     RecAdapter recAdapter;
     LoadingDialog loadingDialog;
+    protected App mApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,8 @@ public class LeaderBoardActivity extends AppCompatActivity {
         ivBack = findViewById(R.id.ivBack);
         edSearch = findViewById(R.id.edSearch);
         recyclerView = findViewById(R.id.recycleView);
+
+        mApp = (App) this.getApplicationContext();
 
         loadingDialog = new LoadingDialog(this);
         loadingDialog.showLoadingDialog();
@@ -125,5 +128,11 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 return Integer.compare(q1.getTime(), q2.getTime());
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mApp.setCurrentActivity(this);
     }
 }

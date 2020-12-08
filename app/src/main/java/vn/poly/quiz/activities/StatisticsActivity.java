@@ -45,6 +45,7 @@ public class StatisticsActivity extends AppCompatActivity {
     QuestionInfo qInfo, easyQ, hardQ;
     List<QuestionInfo> listQInfo;
     LoadingDialog loadingDialog;
+    protected App mApp ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,8 @@ public class StatisticsActivity extends AppCompatActivity {
         tvQuestionLR = findViewById(R.id.tvQuestionLR);
         pieChartCorrect = findViewById(R.id.pieChartCorrect);
         pieChartWrong = findViewById(R.id.pieChartWrong);
+
+        mApp = (App) this.getApplicationContext();
 
         loadingDialog = new LoadingDialog(this);
         loadingDialog.showLoadingDialog();
@@ -150,5 +153,11 @@ public class StatisticsActivity extends AppCompatActivity {
                 return Integer.compare(qi2.getNumberAnswered(), qi1.getNumberAnswered());
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mApp.setCurrentActivity(this);
     }
 }

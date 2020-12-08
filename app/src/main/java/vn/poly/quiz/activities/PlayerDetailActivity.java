@@ -72,6 +72,7 @@ public class PlayerDetailActivity extends AppCompatActivity {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     pd = data.getValue(PlayerDetail.class);
                 }
+                assert pd != null;
                 numberOfTimePlayed = pd.getTotalPlayed();
                 averageTime = pd.getTotalTimePlayed()/numberOfTimePlayed;
                 correctRate = pd.getTotalCorrectAnswer()*100.0/pd.getTotalQuestionAnswered();

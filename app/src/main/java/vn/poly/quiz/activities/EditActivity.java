@@ -157,7 +157,7 @@ public class EditActivity extends AppCompatActivity {
                 filepath.putFile(imageUri)
                         .addOnSuccessListener((UploadTask.TaskSnapshot taskSnapshot) -> {
 
-                    Task<Uri> result = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                    Task<Uri> result = Objects.requireNonNull(Objects.requireNonNull(taskSnapshot.getMetadata()).getReference()).getDownloadUrl();
                     result.addOnSuccessListener(uri -> {
                         String photoStringLink = uri.toString();
                         changeImageURLInQuiz(photoStringLink);
@@ -202,6 +202,7 @@ public class EditActivity extends AppCompatActivity {
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             quiz = data.getValue(Quiz.class);
+                            assert quiz != null;
                             quiz.setDisplayName(displayName);
                             String key = quiz.getKey();
                             rootRef.child("Quiz").child(key).setValue(quiz);
@@ -225,6 +226,7 @@ public class EditActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         quiz = data.getValue(Quiz.class);
+                        assert quiz != null;
                         quiz.setImageURL(imageURL);
                         String key = quiz.getKey();
                         rootRef.child("Quiz").child(key).setValue(quiz);
@@ -334,7 +336,8 @@ public class EditActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == 999){
             if(grantResults.length > 0

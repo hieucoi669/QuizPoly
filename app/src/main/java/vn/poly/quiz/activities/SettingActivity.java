@@ -14,6 +14,7 @@ public class SettingActivity extends AppCompatActivity {
 
     SwitchCompat switchBG, switchSound;
     Button btnBack;
+    protected App mApp ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,8 @@ public class SettingActivity extends AppCompatActivity {
         switchBG = findViewById(R.id.switchBackGroundMusic);
         switchSound = findViewById(R.id.switchSound);
         btnBack = findViewById(R.id.btnSettingBack);
+
+        mApp = (App) this.getApplicationContext();
 
         setBgTogMusic(App.getMusicPlayer().getStateMusic());
         setBgTogSound(App.getMusicPlayer().getStateSound());
@@ -59,5 +62,11 @@ public class SettingActivity extends AppCompatActivity {
         });
         App.getMusicPlayer().setting(this, switchBG.isChecked(), switchSound.isChecked());
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mApp.setCurrentActivity(this);
     }
 }

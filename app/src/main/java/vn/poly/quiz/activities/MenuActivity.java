@@ -3,6 +3,7 @@ package vn.poly.quiz.activities;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -42,14 +43,15 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MenuActivity extends AppCompatActivity
         implements View.OnClickListener, View.OnTouchListener, LifecycleObserver {
 
-    User u;
-    String username, displayName, imageURL, password;
+    User u, loginUser;
+    String username, displayName, imageURL, password, uniqueLogin;
     CircleImageView ivAvatar;
     TextView tvDisplayName, tvUsername;
     CardView cvPlay, cvLeaderBoard, cvSettings, cvStatistics;
@@ -59,6 +61,7 @@ public class MenuActivity extends AppCompatActivity
     ImageView ivLogout;
     DatabaseReference mDatabase;
     LoadingDialog loadingDialog;
+    protected App mApp ;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -78,21 +81,38 @@ public class MenuActivity extends AppCompatActivity
         cvLayoutTop = findViewById(R.id.cvLayoutTop);
         ivLogout = findViewById(R.id.ivLogout);
 
+        mApp = (App) this.getApplicationContext();
+
         loadingDialog = new LoadingDialog(this);
         loadingDialog.showLoadingDialog();
 
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
+        loginUser = (User) intent.getSerializableExtra("user");
+        uniqueLogin = UUID.randomUUID().toString();
+        if(loginUser != null){
+            loginUser.setUniqueLogin(uniqueLogin);
+        }
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Users");
+
+        if (loginUser != null){
+            mDatabase.child(username).setValue(loginUser);
+        }
 
         mDatabase.child(username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
 
                 u = dataSnapshot.getValue(User.class);
+                assert u != null;
                 setUserInfo(u);
+
                 loadingDialog.hideLoadingDialog();
+                if (!uniqueLogin.equals(u.getUniqueLogin()) && loginUser!=null){
+                    Activity currentActivity = ((App) getApplicationContext()).getCurrentActivity();
+                    loadingDialog.uniqueLoginDialog(currentActivity);
+                }
             }
 
             @Override
@@ -124,7 +144,7 @@ public class MenuActivity extends AppCompatActivity
 
         if(imageURL != null)
         {
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .load(imageURL)
                     .placeholder(R.drawable.avatar_holder)
                     .into(ivAvatar);
@@ -314,5 +334,11 @@ public class MenuActivity extends AppCompatActivity
     public void onBackPressed() {
         super.onBackPressed();
         App.getMusicPlayer().pauseBgMusic();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mApp.setCurrentActivity(this);
     }
 }

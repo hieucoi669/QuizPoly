@@ -52,7 +52,7 @@ public class RecAdapter extends RecyclerView.Adapter<RecAdapter.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         int rank = position;
 
@@ -76,7 +76,8 @@ public class RecAdapter extends RecyclerView.Adapter<RecAdapter.ViewHolder>{
             holder.backGround.setBackgroundResource(R.drawable.bg_silver);
         }else if(rank == 2){
             holder.backGround.setBackgroundResource(R.drawable.bg_bronze);
-        }
+        }else
+            holder.backGround.setBackgroundResource(R.drawable.bg_default);
 
         Quiz quiz = list.get(position);
         String username = quiz.getUsername();

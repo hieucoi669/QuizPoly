@@ -74,6 +74,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     AnimationSet animationSet;
 
     AlphaAnimation animationAlpha;
+    protected App mApp ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.quizcount_layout);
         tvCount = findViewById(R.id.tvCount);
 
+        mApp = (App) this.getApplicationContext();
         rootRef = FirebaseDatabase.getInstance().getReference();
         loadingDialog = new LoadingDialog(this);
         loadingDialog.showLoadingDialog();
@@ -536,4 +538,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mApp.setCurrentActivity(this);
+    }
 }
