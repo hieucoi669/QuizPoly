@@ -113,7 +113,7 @@ public class MenuActivity extends AppCompatActivity
                     setUserInfo(u);
 
                     loadingDialog.hideLoadingDialog();
-                    if (!loginUser.getUniqueLogin().equals(u.getUniqueLogin()) && loginUser!=null){
+                    if (!uniqueLogin.equals(u.getUniqueLogin()) && loginUser!=null){
                         Activity currentActivity = ((App) getApplicationContext()).getCurrentActivity();
                         loadingDialog.uniqueLoginDialog(currentActivity);
                     }
