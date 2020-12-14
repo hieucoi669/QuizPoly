@@ -249,13 +249,20 @@ public class EditActivity extends AppCompatActivity {
 
     private void getPhotoFromCam(){
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
-            Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-            startActivityForResult(i, SELECT_PHOTO_CAMERA);
-        }else {
+                startActivityForResult(i, SELECT_PHOTO_CAMERA);
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA}, 999);
+            }
+        }else{
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA}, 999);
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 888);
         }
     }
 
@@ -344,6 +351,22 @@ public class EditActivity extends AppCompatActivity {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(i, SELECT_PHOTO_CAMERA);
+            }else{
+                Toast.makeText(this, getString(R.string.one_time_camera_message_fail),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }else if(requestCode == 888){
+            if(grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                    startActivityForResult(i, SELECT_PHOTO_CAMERA);
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.CAMERA}, 999);
+                }
             }else{
                 Toast.makeText(this, getString(R.string.one_time_camera_message_fail),
                         Toast.LENGTH_SHORT).show();
