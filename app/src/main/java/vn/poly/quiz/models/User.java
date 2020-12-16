@@ -27,6 +27,16 @@ public class User implements Serializable {
         this.auth = auth;
     }
 
+    public User(String uniqueLogin, String username, String password, String displayName,
+                String imageURL, String auth) {
+        this.uniqueLogin = uniqueLogin;
+        this.username = username;
+        this.password = password;
+        this.displayName = displayName;
+        this.imageURL = imageURL;
+        this.auth = auth;
+    }
+
     public String getUsername() {
         return username;
     }

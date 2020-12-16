@@ -45,7 +45,7 @@
     <!--ResultActivity-->
 
     <string name="result_button_share">Chia sẻ</string>
-    <string name="result_button_play_again">Chơi lại</string>
+    <string name="result_button_return">Quay về Menu</string>
 
     <!--SettingActivity-->
 
@@ -110,11 +110,12 @@
     <string name="list_item_count_correct_ans">%1$d/10</string>
     <string name="one_time_camera_message_fail">Không thể truy cập camera!</string>
     <string name="dialog_loading_text">Loading…</string>
-    <string name="dialog_no_internet_title">Không có kết nối mạng!</string>
+    <string name="dialog_no_internet_title">Lỗi kết nối mạng!</string>
     <string name="dialog_no_internet_btn_confirm">Xác nhận</string>
-    <string name="dialog_no_internet_message">Vui lòng kiểm tra lại kết nối mạng!</string>
-    <string name="dialog_unique_login_title">Tài khoản đã bị đăng nhập</string>
+    <string name="dialog_no_internet_message">Vui lòng kiểm tra lại kết nối internet!
+        Ứng dụng sẽ chuyển về màn hình đăng nhập.</string>
+    <string name="dialog_unique_login_title">Lỗi đăng nhập!</string>
     <string name="dialog_unique_login_message">Tài khoản đã bị đăng nhập trên một thiết bị khác!
-        Ứng dụng sẽ tự động thoát</string>
+        Ứng dụng sẽ chuyển về màn hình đăng nhập.</string>
     <string name="login_checkbox_title">Tự động đăng nhập</string>
 </resources>

@@ -106,7 +106,7 @@ public class OneTimeActivity extends AppCompatActivity {
     private void changeOtherInfo(){
         DatabaseReference userRef = rootRef.child("Users").child(username);
         userRef.setValue(u)
-                .addOnSuccessListener(aVoid -> {
+                .addOnSuccessListener(this, aVoid -> {
                     loadingDialog.hideLoadingDialog();
                     Intent intent = new Intent(OneTimeActivity.this,
                             MenuActivity.class);

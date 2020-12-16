@@ -20,6 +20,8 @@ import java.util.Locale;
 
 import vn.poly.quiz.activities.PlayerDetailActivity;
 import vn.poly.quiz.models.Quiz;
+import vn.poly.quiz.sound.App;
+import vn.poly.quiz.sound.MusicManager;
 
 public class RecAdapter extends RecyclerView.Adapter<RecAdapter.ViewHolder>{
 
@@ -95,6 +97,9 @@ public class RecAdapter extends RecyclerView.Adapter<RecAdapter.ViewHolder>{
         String formatted = sdf.format(time);
         holder.tvPlayTime.setText(formatted);
         holder.ivDetail.setOnClickListener(view -> {
+            App.getMusicPlayer().play(context, MusicManager.buttonClick, mediaPlayer -> {
+
+            });
             Intent i = new Intent(context, PlayerDetailActivity.class);
             i.putExtra("username", username);
             i.putExtra("displayName", displayName);

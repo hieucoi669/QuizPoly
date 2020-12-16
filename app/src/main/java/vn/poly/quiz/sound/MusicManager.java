@@ -17,9 +17,11 @@ public class MusicManager implements MediaPlayer.OnPreparedListener, MediaPlayer
     public static final int PLAYER_PAUSE = 2;
     private int stateS, stateBg;
 
-    public static final int bgMusicList = R.raw.bg_sound_ver1;
+    public static final int bgMusicList = R.raw.bgmusic;
     public static final int buttonClick = R.raw.buttonsoundfinal;
     public static final int clockTicking = R.raw.ticking_ver2;
+    public static final int correctSound = R.raw.correct_answer_sound;
+    public static final int wrongSound = R.raw.wrong_answer_sound;
 
     private MediaPlayer mediaPlayer;
     private MediaPlayer bgMusic;

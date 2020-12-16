@@ -132,12 +132,21 @@ public class LoginActivity extends AppCompatActivity {
                         u = data.getValue(User.class);
                     }
                     setAutoLogin(auth);
-                    loadingDialog.hideLoadingDialog();
 
-                    Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                    intent.putExtra("username", u.getUsername());
-                    intent.putExtra("user", u);
+                    loadingDialog.hideLoadingDialog();
+                    Intent intent;
+                    if(u.getDisplayName() == null){
+                        intent = new Intent(LoginActivity.this,
+                                OneTimeActivity.class);
+                        intent.putExtra("username", u.getUsername());
+                        intent.putExtra("password", u.getPassword());
+                    }else {
+                        intent = new Intent(LoginActivity.this, MenuActivity.class);
+                        intent.putExtra("username", u.getUsername());
+                        intent.putExtra("user", u);
+                    }
                     startActivity(intent);
+
                 } else {
                     SharedPreferences.Editor editor = pref.edit();
                     editor.clear();

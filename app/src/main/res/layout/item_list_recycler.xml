@@ -23,6 +23,8 @@
                 android:orientation="horizontal"
                 android:weightSum="1"
                 android:padding="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="0dp"
                 android:baselineAligned="false">
 
                 <LinearLayout
@@ -46,7 +48,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="0dp">
 
                     <TextView
                         android:id="@+id/tvDisplayNameLB"

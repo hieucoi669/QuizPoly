@@ -8,6 +8,7 @@ import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -67,6 +68,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     QuestionInfo qInfo;
     SimpleDateFormat sdf;
     ObjectAnimator animation;
+    ColorStateList oldColors;
     boolean answered, countDownSound, doubleBackToExitPressedOnce=false;
 
     FrameLayout frameLayoutClock;
@@ -103,6 +105,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         pbClock = findViewById(R.id.pbClock);
         frameLayoutClock = findViewById(R.id.frameClock);
 
+        oldColors = tvQuestion.getTextColors();
         Locale.setDefault(new Locale("vi", "VN"));
         sdf = new SimpleDateFormat("ss:SS", Locale.getDefault());
 
@@ -165,6 +168,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private void setDefaultAnswer(){
         answered = false;
         for(TextView tv : listTV){
+            tv.setTextColor(oldColors);
             tv.setTypeface(Typeface.DEFAULT);
             tv.setBackground(ContextCompat.getDrawable(this, R.drawable.default_border_bg));
             tv.setClickable(true);
@@ -211,28 +215,41 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                 numCorrectAnswer++;
                 colorFadeTrue(tv);
                 answer = true;
+                App.getMusicPlayer().play(this, MusicManager.correctSound, mediaPlayer -> {
+
+                });
             }else{
                 colorFadeWrong(tv);
                 for(TextView textView : listTV){
                     if(textView.getText().equals(q.getCorrectAnswer())){
+                        textView.setTypeface(null,Typeface.BOLD);
                         colorFadeTrue(textView);
                         break;
                     }
                 }
                 answer = false;
+                App.getMusicPlayer().play(this, MusicManager.wrongSound, mediaPlayer -> {
+
+                });
             }
         }else {
             for(TextView textView : listTV){
                 if(textView.getText().equals(q.getCorrectAnswer())){
+                    textView.setTypeface(null,Typeface.BOLD);
                     colorFadeTrue(textView);
                     break;
                 }
             }
             answer = false;
+            App.getMusicPlayer().play(this, MusicManager.wrongSound, mediaPlayer -> {
+
+            });
         }
 
         quiz.setNumCorrectAnswer(numCorrectAnswer);
         quiz.setTime(totalTime);
+
+        loadingDialog.checkInternet();
         rootRef.child("Quiz").child(uniqueKey).setValue(quiz);
         setPlayerDetail(countTime, answer);
 
@@ -366,13 +383,11 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                         q.setId(data.getKey());
                     }
                     listQuestion.add(q);
-                    listQuestion.add(q);
                 }
                 Collections.shuffle(listQuestion);
                 loadingDialog.hideLoadingDialog();
                 countDown(tvCount,3);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -468,6 +483,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void colorFadeTrue(TextView tv){
+        tv.setTextColor(Color.WHITE);
         ObjectAnimator colorFadeTrue = ObjectAnimator.ofObject(tv, "backgroundColor",
                 new ArgbEvaluator(), Color.WHITE,Color.GREEN);
         colorFadeTrue.setDuration(600);
@@ -475,6 +491,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void colorFadeWrong(TextView tv){
+        tv.setTextColor(Color.WHITE);
         ObjectAnimator colorFadeTrue = ObjectAnimator.ofObject(tv, "backgroundColor",
                 new ArgbEvaluator(), Color.WHITE,Color.RED);
         colorFadeTrue.setDuration(600);

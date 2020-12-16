@@ -68,7 +68,7 @@ public class SignUpActivity extends AppCompatActivity {
                         User u = new User(username, password, username + "_" + password);
 
                         userRef.setValue(u)
-                                .addOnSuccessListener(aVoid -> {
+                                .addOnSuccessListener(SignUpActivity.this,aVoid -> {
                                     loadingDialog.hideLoadingDialog();
                                     Intent intent = new Intent(SignUpActivity.this,
                                             OneTimeActivity.class);

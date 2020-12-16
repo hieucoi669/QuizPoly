@@ -83,7 +83,7 @@
                     android:id="@+id/btnPlayAgain"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/result_button_play_again" />
+                    android:text="@string/result_button_return" />
 
             </LinearLayout>
 

@@ -60,9 +60,9 @@ public class MenuActivity extends AppCompatActivity
     CardView cvLayoutTop;
     ImageView ivLogout;
     DatabaseReference mDatabase;
+    ValueEventListener eventListener;
     LoadingDialog loadingDialog;
     protected App mApp ;
-    boolean isListening = true;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -71,7 +71,6 @@ public class MenuActivity extends AppCompatActivity
         setContentView(R.layout.activity_menu);
 
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-
 
         ivAvatar = findViewById(R.id.ivAvatar);
         tvDisplayName = findViewById(R.id.tvDisplayNameMenu);
@@ -103,24 +102,20 @@ public class MenuActivity extends AppCompatActivity
             mDatabase.child(username).setValue(loginUser);
         }
 
-        mDatabase.child(username).addValueEventListener(new ValueEventListener() {
+        eventListener = mDatabase.child(username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
 
-                if(isListening){
-                    u = dataSnapshot.getValue(User.class);
-                    assert u != null;
-                    setUserInfo(u);
+                u = dataSnapshot.getValue(User.class);
+                if (u == null) throw new AssertionError();
+                setUserInfo(u);
 
-                    loadingDialog.hideLoadingDialog();
-                    if (!uniqueLogin.equals(u.getUniqueLogin()) && loginUser!=null){
-                        Activity currentActivity = ((App) getApplicationContext()).getCurrentActivity();
-                        loadingDialog.uniqueLoginDialog(currentActivity);
-                    }
+                loadingDialog.hideLoadingDialog();
+                if (!uniqueLogin.equals(u.getUniqueLogin()) && loginUser!=null){
+                    Activity currentActivity = ((App) getApplicationContext()).getCurrentActivity();
+                    loadingDialog.uniqueLoginDialog(currentActivity);
                 }
-
             }
-
             @Override
             public void onCancelled(@NotNull DatabaseError error) {
                 Log.i("Firebase", "Failed to read value.", error.toException());
@@ -161,8 +156,6 @@ public class MenuActivity extends AppCompatActivity
     }
 
     public void logOut() {
-        isListening = false;
-
         SharedPreferences pref = getSharedPreferences("USER_FILE",MODE_PRIVATE);
         SharedPreferences.Editor edit = pref.edit();
         edit.clear();
@@ -239,6 +232,7 @@ public class MenuActivity extends AppCompatActivity
                 intent.putExtra("displayName",displayName);
                 intent.putExtra("password",password);
                 intent.putExtra("imageURL",imageURL);
+                intent.putExtra("uniqueLogin", uniqueLogin);
                 startActivity(intent);
             }
         });
@@ -345,8 +339,7 @@ public class MenuActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        App.getMusicPlayer().pauseBgMusic();
+        logOut();
     }
 
     @Override
@@ -365,5 +358,14 @@ public class MenuActivity extends AppCompatActivity
     public void onResume(@NotNull LifecycleOwner owner) {
         // Capture "launch" event when app is "launched"
         App.getMusicPlayer().resumeBgMusic();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        App.getMusicPlayer().stopBgMusic();
+        if(mDatabase != null){
+            mDatabase.child(username).removeEventListener(eventListener);
+        }
     }
 }

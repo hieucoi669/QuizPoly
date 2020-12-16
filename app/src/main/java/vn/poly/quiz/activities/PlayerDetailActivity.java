@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import vn.poly.quiz.sound.App;
+import vn.poly.quiz.sound.MusicManager;
 
 public class PlayerDetailActivity extends AppCompatActivity {
 
@@ -100,6 +102,12 @@ public class PlayerDetailActivity extends AppCompatActivity {
 
         tvDisplayName.setText(displayName);
 
-        btnClose.setOnClickListener(view -> finish());
+        btnClose.setOnClickListener(view -> {
+            App.getMusicPlayer().play(PlayerDetailActivity.this,
+                    MusicManager.buttonClick, mediaPlayer -> {
+
+                    });
+            finish();
+        });
     }
 }

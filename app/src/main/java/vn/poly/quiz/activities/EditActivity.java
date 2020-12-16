@@ -57,7 +57,7 @@ public class EditActivity extends AppCompatActivity {
     CircleImageView ivAvatar, ivEditAvatar;
     TextInputLayout edPassword,edRePassword, edDisplayName;
     TextView tvUsername;
-    String username, displayName, password, imageURL;
+    String username, displayName, password, imageURL, uniqueLogin;
     Button btnGallery, btnCamera, btnSua;
     Bitmap selectedBitmap;
     Uri imageUri;
@@ -86,11 +86,12 @@ public class EditActivity extends AppCompatActivity {
 
         loadingDialog = new LoadingDialog(this);
 
-        Intent intent =  getIntent();
+        Intent intent = getIntent();
         username = intent.getStringExtra("username");
         displayName = intent.getStringExtra("displayName");
         password = intent.getStringExtra("password");
         imageURL = intent.getStringExtra("imageURL");
+        uniqueLogin = intent.getStringExtra("uniqueLogin");
 
         tvUsername.setText(getString(R.string.edit_hint_username, username));
 
@@ -162,29 +163,28 @@ public class EditActivity extends AppCompatActivity {
                         String photoStringLink = uri.toString();
                         changeImageURLInQuiz(photoStringLink);
 
-                        u = new User(username, password, displayName, photoStringLink,
-                                username + "_" + password);
-                        changeOtherInfo(displayName);
+                        changeOtherInfo(displayName, photoStringLink);
                     });
                 });
             }else{
-                u = new User(username, password, displayName, imageURL,
-                        username + "_" + password);
-                changeOtherInfo(displayName);
+                changeOtherInfo(displayName, imageURL);
             }
         }
     }
 
-    private void changeOtherInfo(String displayName) {
+    private void changeOtherInfo(String displayName, String imageURL) {
+        u = new User(uniqueLogin, username, password, displayName, imageURL,
+                username + "_" + password);
         DatabaseReference userRef = rootRef.child("Users").child(username);
         userRef.setValue(u)
                 .addOnSuccessListener(aVoid -> {
                     changeDisplayNameInQuiz(displayName);
                     loadingDialog.hideLoadingDialog();
-                    Intent intent = new Intent(EditActivity.this,
-                            MenuActivity.class);
-                    intent.putExtra("username", username);
-                    startActivity(intent);
+//                    Intent intent = new Intent(EditActivity.this,
+//                            MenuActivity.class);
+//                    intent.putExtra("username", username);
+//                    startActivity(intent);
+                    finish();
                 })
                 .addOnFailureListener(e -> {
                     loadingDialog.hideLoadingDialog();

@@ -2,6 +2,7 @@ package vn.poly.quiz;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
@@ -12,15 +13,19 @@ import android.os.Handler;
 import android.widget.Button;
 import android.widget.TextView;
 
+import vn.poly.quiz.activities.LoginActivity;
+
 public class LoadingDialog {
     final Activity activity;
     AlertDialog dialog, dialogNoInternet;
     boolean dialogShow;
     Button btnConfirm;
     TextView tvDialogTitle, tvDialogMessage;
+    final CheckInternet checkInternet;
 
     public LoadingDialog(Activity activity) {
         this.activity = activity;
+        checkInternet = new CheckInternet();
     }
 
     public void showLoadingDialog(){
@@ -39,9 +44,7 @@ public class LoadingDialog {
 
         new Handler().postDelayed(() -> {
             if(dialogShow){
-                if(!new CheckInternet().isNetworkAvailable(activity)){
-                    noInternetDialog();
-                }
+                checkInternet();
             }
         },5000);
 
@@ -51,6 +54,12 @@ public class LoadingDialog {
         if(dialogShow){
             dialogShow = false;
             dialog.dismiss();
+        }
+    }
+
+    public void checkInternet(){
+        if(!checkInternet.isNetworkAvailable(activity)){
+            noInternetDialog();
         }
     }
 
@@ -78,8 +87,11 @@ public class LoadingDialog {
         btnConfirm.setOnClickListener(view1 -> {
             dialogNoInternet.dismiss();
             dialog.dismiss();
-            activity.finishAffinity();
-            System.exit(0);
+
+            Intent i = new Intent(activity, LoginActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            activity.startActivity(i);
+            activity.finish();
         });
     }
 
@@ -106,8 +118,11 @@ public class LoadingDialog {
 
         btnConfirm.setOnClickListener(view1 -> {
             dialogNoInternet.dismiss();
-            activity.finishAffinity();
-            System.exit(0);
+
+            Intent i = new Intent(activity, LoginActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            activity.startActivity(i);
+            activity.finish();
         });
     }
 }
