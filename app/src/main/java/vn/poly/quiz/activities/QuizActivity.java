@@ -251,8 +251,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
         loadingDialog.checkInternet();
         rootRef.child("Quiz").child(uniqueKey).setValue(quiz);
-        setPlayerDetail(countTime, answer);
-
+        if(pd != null){
+            setPlayerDetail(countTime, answer);
+        }
         setQuestionInfo(id, question, answer);
 
         new CountDownTimer(2000, 1000) {

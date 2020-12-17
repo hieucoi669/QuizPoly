@@ -3,6 +3,7 @@ package vn.poly.quiz;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import vn.poly.quiz.activities.LoginActivity;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class LoadingDialog {
     final Activity activity;
@@ -87,7 +90,7 @@ public class LoadingDialog {
         btnConfirm.setOnClickListener(view1 -> {
             dialogNoInternet.dismiss();
             dialog.dismiss();
-
+            clearPref();
             Intent i = new Intent(activity, LoginActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             activity.startActivity(i);
@@ -118,11 +121,19 @@ public class LoadingDialog {
 
         btnConfirm.setOnClickListener(view1 -> {
             dialogNoInternet.dismiss();
-
+            clearPref();
             Intent i = new Intent(activity, LoginActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             activity.startActivity(i);
             activity.finish();
         });
     }
+
+    private void clearPref(){
+        SharedPreferences pref = activity.getSharedPreferences("USER_FILE",MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.clear();
+        edit.apply();
+    }
+
 }
