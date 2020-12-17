@@ -34,6 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     LoadingDialog loadingDialog;
     CheckBox chkRemember;
     SharedPreferences pref;
+    Query query;
+    ValueEventListener valueEventListener;
+    boolean isListening = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         loadingDialog = new LoadingDialog(this);
         pref = getSharedPreferences("USER_FILE",MODE_PRIVATE);
 
-        rootRef = FirebaseDatabase.getInstance().getReference();
+        rootRef = FirebaseDatabase.getInstance().getReference().child("Users");
         autoLogin();
         btnLogin.setOnClickListener(view -> login());
         btnRegister.setOnClickListener(view -> register());
@@ -122,38 +125,39 @@ public class LoginActivity extends AppCompatActivity {
 
     private void checkLogin(String auth){
         loadingDialog.showLoadingDialog();
-        Query query = rootRef.child("Users").orderByChild("auth").equalTo(auth);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query = rootRef.orderByChild("auth").equalTo(auth);
+        valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
+                if(isListening){
+                    if (dataSnapshot.exists()) {
 
-                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        u = data.getValue(User.class);
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            u = data.getValue(User.class);
+                        }
+                        setAutoLogin(auth);
+                        loadingDialog.hideLoadingDialog();
+                        Intent intent;
+                        if(u.getDisplayName() == null){
+                            intent = new Intent(LoginActivity.this,
+                                    OneTimeActivity.class);
+                            intent.putExtra("username", u.getUsername());
+                            intent.putExtra("password", u.getPassword());
+                        }else {
+                            intent = new Intent(LoginActivity.this, MenuActivity.class);
+                            intent.putExtra("username", u.getUsername());
+                            intent.putExtra("user", u);
+                        }
+                        startActivity(intent);
+
+                    } else {
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.clear();
+                        editor.apply();
+                        loadingDialog.hideLoadingDialog();
+                        Toast.makeText(LoginActivity.this,
+                                getString(R.string.ed_password_error_wrong), Toast.LENGTH_SHORT).show();
                     }
-                    setAutoLogin(auth);
-
-                    loadingDialog.hideLoadingDialog();
-                    Intent intent;
-                    if(u.getDisplayName() == null){
-                        intent = new Intent(LoginActivity.this,
-                                OneTimeActivity.class);
-                        intent.putExtra("username", u.getUsername());
-                        intent.putExtra("password", u.getPassword());
-                    }else {
-                        intent = new Intent(LoginActivity.this, MenuActivity.class);
-                        intent.putExtra("username", u.getUsername());
-                        intent.putExtra("user", u);
-                    }
-                    startActivity(intent);
-
-                } else {
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.clear();
-                    editor.apply();
-                    loadingDialog.hideLoadingDialog();
-                    Toast.makeText(LoginActivity.this,
-                            getString(R.string.ed_password_error_wrong), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -162,6 +166,13 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,
                         "DOC", Toast.LENGTH_SHORT).show();
             }
-        });
+        };
+        query.addListenerForSingleValueEvent(valueEventListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        isListening = false;
+        super.onDestroy();
     }
 }
